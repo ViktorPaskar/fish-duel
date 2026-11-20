@@ -120,6 +120,16 @@ button.row:active,a.row:active{background:var(--g2)}
 .comp.pop{animation:pop .7s var(--spring)}
 @keyframes pop{35%{transform:scale(1.02)}}
 
+/* tips */
+.tip{position:relative;display:flex;gap:12px;align-items:flex-start;margin-top:12px;padding:14px 44px 14px 14px;border-radius:16px;background:var(--g1)}
+.tip .ic{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:rgba(255,45,120,.18);color:var(--tint);flex:none}
+.tip .ic svg{width:17px;height:17px;stroke-width:2.2}
+.tip .t{flex:1;min-width:0}
+.tip b{display:block;font-size:15px;font-weight:600}
+.tip p{margin-top:2px;font-size:13px;color:var(--l2);line-height:1.38}
+.tip .pbtn{margin-top:10px}
+.x2{position:absolute;top:6px;right:6px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;color:var(--l3)}
+.x2 svg{width:15px;height:15px;stroke-width:2.4}
 /* stat rows */
 .sr .t b{font-size:17px}
 .sr .vals{display:flex;gap:4px}
@@ -304,6 +314,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.5" cy="6.5" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="17.5" r="1"/></symbol>
   <symbol id="i-fish" viewBox="0 0 24 24"><path d="M7 12c2.3-3.4 5.2-5.2 8.4-5.2 2.5 0 4.6 1.6 6.6 5.2-2 3.6-4.1 5.2-6.6 5.2-3.2 0-6.1-1.8-8.4-5.2z"/><path d="M7 12 2.5 8.4v7.2z"/></symbol>
   <symbol id="i-fishf" viewBox="0 0 24 24"><path d="M7 12c2.3-3.4 5.2-5.2 8.4-5.2 2.5 0 4.6 1.6 6.6 5.2-2 3.6-4.1 5.2-6.6 5.2-3.2 0-6.1-1.8-8.4-5.2zM7 12 2.5 8.4v7.2z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M5 15v4h14v-4"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
 </svg>
 
@@ -421,11 +433,18 @@ const normSp=s=>{s=String(s).trim().replace(/\s+/g,' ');const a=ALIAS[s.toLowerC
 const LS='fishduel.v1',ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const rid=n=>{let s='';const a=new Uint32Array(n);crypto.getRandomValues(a);for(const x of a)s+=ABC[x%ABC.length];return s};
 let S={};try{S=JSON.parse(localStorage.getItem(LS))||{}}catch(e){S={}}
+const FRESH=!S.pid;
 S.pid=S.pid||rid(12);S.catches=S.catches||{};S.deleted=S.deleted||{};S.names=S.names||{};S.avatars=S.avatars||{};
 for(const c of Object.values(S.catches)){if(c.g==null&&Number.isInteger(c.oz)){c.g=Math.round(c.oz*28.3495);delete c.oz}c.sp=normSp(c.sp);remap(c)}
 if(S.lastLoc&&!S.lastLoc.m)remap(S.lastLoc);
 let period=['today','week','all'].includes(S.period)?S.period:'today',view=['board','map','log','species'].includes(S.view)?S.view:'board',unit=S.unit==='lb'?'lb':'kg';
-const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
+/* IndexedDB keeps a second, larger copy of the whole history */
+const IDB=(()=>{let p=null;
+  const open=()=>p||(p=new Promise((res,rej)=>{if(!window.indexedDB)return rej(new Error('no idb'));const q=indexedDB.open('fishduel',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
+  const tx=(mode,f)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction('kv',mode),q=f(t.objectStore('kv'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)}));
+  return{get:k=>tx('readonly',st=>st.get(k)),set:(k,v)=>tx('readwrite',st=>{st.put(v,k)})}})();
+let idbT;
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}clearTimeout(idbT);idbT=setTimeout(()=>{IDB.set('state',JSON.parse(JSON.stringify(S))).catch(()=>{})},300)};
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -519,6 +538,14 @@ function sub(){
   const st={online:'друг онлайн',waiting:'ждём друга',connecting:'подключение…',off:'нет связи'}[net];
   return `<p class="sub">Комната <b>${esc(S.room)}</b>, ${st}</p>`;
 }
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const STANDALONE=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+function tipsHTML(){
+  let h='';const n=all().length,days=S.lastBackup?Math.floor((Date.now()-S.lastBackup)/864e5):null;
+  if(IOS&&!STANDALONE&&!S.hideA2HS)h+=`<div class="tip"><span class="ic">${ic('share')}</span><div class="t"><b>Добавь на экран «Домой»</b><p>Нажми «Поделиться», затем «На экран Домой». Так iPhone не сотрёт историю.</p></div><button class="x2" data-hide="A2HS" aria-label="Скрыть">${ic('x')}</button></div>`;
+  if(n&&n!==S.lastBackupCount&&(days===null||days>=7))h+=`<div class="tip"><span class="ic">${ic('save')}</span><div class="t"><b>Сохрани копию истории</b><p>${days===null?'Копии ещё нет.':`Последняя копия ${days} ${plural(days,'день','дня','дней')} назад.`} Файл попадёт в «Файлы».</p><button class="pbtn" data-export>Сохранить копию</button></div></div>`;
+  return h;
+}
 function renderBoard(){
   const L=inPeriod(),P=stats(L),me=P[S.pid],op=rival(P);
   const a=me.best?me.best.g:0,b=op&&op.best?op.best.g:0,meL=a>b,opL=!!op&&b>a;
@@ -531,7 +558,7 @@ function renderBoard(){
   if(op){const msg=!a&&!b?`Пока никто ничего не поймал ${PL[period]}.`:a===b?'Ничья.':meL?`Ты впереди на <b>${kgT(a-b)}</b>.`:`${esc(nm(op.pid))} впереди на <b>${kgT(b-a)}</b>.`;
     foot=`<div class="foot"><div class="track">${a||b?`<i class="me" style="flex-grow:${a}"></i><i class="op" style="flex-grow:${b}"></i>`:''}</div><p>${msg}</p></div>`}
   let h=`<h1 class="lt">Табло</h1>${sub()}<div class="seg" data-seg>${segHTML()}</div>
-    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${foot}</div>`;
+    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${foot}</div>${tipsHTML()}`;
   if(L.length){
     const wins={[S.pid]:0};if(op)wins[op.pid]=0;
     for(const sp of new Set(L.map(c=>c.sp))){const x=me.sp[sp],y=op&&op.sp[sp];if(x&&(!y||x.g>y.g))wins[S.pid]++;else if(y&&(!x||y.g>x.g))wins[op.pid]++}
@@ -549,9 +576,9 @@ function renderBoard(){
     <button class="row red" id="leaveBtn"><span class="t"><b>Выйти из комнаты</b></span></button></div>
     <div class="gh">История</div><div class="group">
     <div class="row"><span class="t"><b>Записей</b></span><span class="v num">${all().length}</span></div>
-    <button class="row tint" id="exportBtn"><span class="t"><b>Сохранить копию в файл</b></span></button>
+    <button class="row tint" id="exportBtn" data-export><span class="t"><b>Сохранить копию в файл</b></span></button>
     <button class="row tint" id="importBtn"><span class="t"><b>Восстановить из файла</b></span></button></div>
-    <p class="gf">История хранится на обоих телефонах и сама восстанавливается от друга при подключении. На iPhone добавь сайт на экран «Домой»: так Safari не удалит данные.</p>
+    <p class="gf">История хранится на обоих телефонах и восстанавливается от друга при подключении.</p>
     <p class="gf">Карта © Rockstar Games. Неофициальный фан-проект.</p>`;
   $('#board').innerHTML=h;
 }
@@ -770,11 +797,12 @@ document.addEventListener('click',e=>{
 /* ---------- history backup ---------- */
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 document.addEventListener('click',e=>{
-  if(e.target.closest('#exportBtn')){
+  if(e.target.closest('[data-hide]')){S['hide'+e.target.closest('[data-hide]').dataset.hide]=1;save();render();return}
+  if(e.target.closest('[data-export]')){
     const data={app:'fish-duel',v:1,exported:new Date().toISOString(),room:S.room,names:S.names,avatars:S.avatars,catches:Object.values(S.catches),deleted:Object.keys(S.deleted)};
     const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download=`fish-duel-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
-    S.lastBackup=Date.now();save();toast('Копия сохранена');return}
+    S.lastBackup=Date.now();S.lastBackupCount=all().length;save();render();toast('Копия сохранена');return}
   if(e.target.closest('#importBtn')){const f=$('#bkFile');f.value='';f.click()}
 });
 $('#bkFile').addEventListener('change',async()=>{
@@ -788,6 +816,14 @@ $('#bkFile').addEventListener('change',async()=>{
     save();send(hello());render();const n=all().length-before;toast(n?`Восстановлено записей: ${n}`:'Все записи уже были на месте');
   }catch(err){toast('Это не файл копии Fish Duel')}
 });
+IDB.get('state').then(d=>{
+  if(!d||typeof d!=='object')return;let ch=false;
+  if(FRESH&&typeof d.pid==='string'){S.pid=d.pid;if(d.room)S.room=d.room;for(const k of['period','view','unit','lastBackup','lastBackupCount','lastLoc','hideA2HS'])if(d[k]!=null)S[k]=d[k];ch=true}
+  if(d.deleted)for(const id of Object.keys(d.deleted))if(!S.deleted[id]){S.deleted[id]=1;delete S.catches[id];ch=true}
+  if(d.catches)for(const c of Object.values(d.catches))if(okCatch(c)&&!S.deleted[c.id]&&!S.catches[c.id]){S.catches[c.id]=clean(c);ch=true}
+  for(const k of['names','avatars'])if(d[k]&&typeof d[k]==='object')for(const[a,v]of Object.entries(d[k]))if(!S[k][a]){S[k][a]=v;ch=true}
+  if(ch){save();render();if(S.room&&FRESH)join();else send(hello())}
+}).catch(()=>{});
 renderObAv();
 const hash=(location.hash||'').slice(1).toUpperCase().replace(/[^A-Z0-9]/g,'');
 if(S.names[S.pid])$('#nameIn').value=S.names[S.pid];
