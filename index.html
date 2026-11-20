@@ -341,7 +341,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 </div></section>
 
 <!-- NAV BAR -->
-<header class="nb hidden" id="nb"><div class="in"><span></span><span class="ct" id="ct"></span><span class="r"><button class="cbtn big" id="addBtn" aria-label="Записать улов"><svg class="i"><use href="#i-plus"/></svg></button></span></div></header>
+<header class="nb hidden" id="nb" data-vv="top"><div class="in"><span></span><span class="ct" id="ct"></span><span class="r"><button class="cbtn big" id="addBtn" aria-label="Записать улов"><svg class="i"><use href="#i-plus"/></svg></button></span></div></header>
 
 <main id="app" class="hidden">
   <section class="page" id="p-board"><div class="wrap" id="board"></div></section>
@@ -354,7 +354,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   </section>
 </main>
 
-<nav class="tabbar hidden" id="tabbar"><div class="in">
+<nav class="tabbar hidden" id="tabbar" data-vv="bottom"><div class="in">
   <button data-v="board"><svg class="i"><use href="#i-trophy"/></svg>Табло</button>
   <button data-v="map"><svg class="i"><use href="#i-map"/></svg>Карта</button>
   <button data-v="log"><svg class="i"><use href="#i-list"/></svg>Журнал</button>
@@ -398,7 +398,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <div class="picker" id="picker" aria-hidden="true">
   <div id="pickmap"></div>
   <div class="cross"><div class="mk"><svg class="i"><use href="#i-fish"/></svg></div></div>
-  <header class="nb solid"><div class="in"><button class="l" id="pkCancel">Отмена</button><span class="ct">Место улова</span><button class="r" id="pkDone">Готово</button></div></header>
+  <header class="nb solid" data-vv="top"><div class="in"><button class="l" id="pkCancel">Отмена</button><span class="ct">Место улова</span><button class="r" id="pkDone">Готово</button></div></header>
 </div>
 
 <div class="ov" id="ov2"></div>
@@ -796,6 +796,13 @@ document.addEventListener('click',e=>{
 /* stop iOS Safari from pinch-zooming the whole page (the map handles its own pinch) */
 ['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
 document.addEventListener('touchmove',e=>{if(e.touches.length>1||(e.scale&&e.scale!==1))e.preventDefault()},{passive:false});
+/* if Safari still zooms the page, keep the bars pinned to what is actually visible, at normal size */
+function vvFix(){const v=window.visualViewport;if(!v)return;const z=v.scale>1.01,H=document.documentElement.clientHeight;
+  document.querySelectorAll('[data-vv]').forEach(el=>{
+    if(!z){el.style.transform='';el.style.transformOrigin='';return}
+    const top=el.dataset.vv==='top';el.style.transformOrigin=top?'0 0':'0 100%';
+    el.style.transform=`translate(${v.offsetLeft}px,${top?v.offsetTop:v.offsetTop+v.height-H}px) scale(${1/v.scale})`})}
+if(window.visualViewport){visualViewport.addEventListener('resize',vvFix);visualViewport.addEventListener('scroll',vvFix)}
 
 /* ---------- boot ---------- */
 /* ---------- history backup ---------- */
