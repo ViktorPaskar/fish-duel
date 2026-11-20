@@ -56,7 +56,18 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 .cbtn.big svg{width:19px;height:19px}
 
 /* ---------- pages ---------- */
-.page{padding-top:calc(44px + var(--st));padding-bottom:calc(49px + var(--sb) + 28px)}
+.page{padding-top:calc(44px + var(--st));padding-bottom:calc(49px + var(--sb) + 92px)}
+.fab{position:fixed;z-index:39;left:50%;bottom:calc(49px + var(--sb) + 14px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:52px;padding:0 24px 0 20px;border-radius:26px;background:var(--tint);color:#fff;font-size:17px;font-weight:600;white-space:nowrap;box-shadow:0 10px 28px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);transition:transform .2s var(--spring)}
+.fab:active{transform:translateX(-50%) scale(.96)}
+.fab svg{width:20px;height:20px;stroke-width:2.8}
+.ccap{padding:16px 16px 0;font-size:13px;font-weight:600;color:var(--l2);text-transform:uppercase;letter-spacing:.04em}
+.onl{display:block;font-style:normal;font-size:12px;font-weight:600;color:var(--green);margin-top:1px}
+.maphint{position:absolute;z-index:500;left:50%;top:calc(140px + var(--st));transform:translateX(-50%);padding:7px 14px;border-radius:16px;background:rgba(28,28,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:var(--l1);font-size:13px;white-space:nowrap;pointer-events:none}
+.wl{font-size:13px;font-weight:600;color:var(--l2);text-transform:uppercase;letter-spacing:.04em}
+.fbtn:disabled{opacity:.35}
+.obh{margin-top:10px;text-align:center;font-size:13px;color:var(--l2)}
+.bests small{font-size:11px;margin-left:2px;opacity:.7}
+.legend b{font-weight:600}
 .lt{font-size:34px;font-weight:700;letter-spacing:.012em;line-height:1.2;margin:4px 0 2px}
 .sub{font-size:15px;color:var(--l2);margin-bottom:16px}
 .sub b{font-weight:600;color:var(--l1)}
@@ -150,7 +161,7 @@ button.row:active,a.row:active{background:var(--g2)}
 .done{display:flex;gap:6px}
 .dscore{display:flex;align-items:center;justify-content:center;gap:18px;padding:18px 16px 4px}
 .dscore b{font-family:var(--round);font-size:36px;font-weight:700;font-variant-numeric:tabular-nums}
-.dscore .me{color:var(--me)}.dscore .op{color:var(--op)}
+.dscore b .me{color:var(--me)}.dscore b .op{color:var(--op)}
 .days{display:flex;gap:8px;align-items:flex-end;padding:12px 16px 14px}
 .dcol{flex:1;display:grid;justify-items:center;gap:5px}
 .dbar{display:block;width:100%;max-width:30px;border-radius:6px;background:var(--fill)}
@@ -288,7 +299,7 @@ button.row:active,a.row:active{background:var(--g2)}
 #p-map{position:fixed;inset:0;padding:0;background:#41f7d5}
 #bigmap{position:absolute;z-index:0;left:0;right:0;top:calc(44px + var(--st));bottom:calc(49px + var(--sb))}
 .mapseg{position:absolute;z-index:500;left:50%;top:calc(56px + var(--st));transform:translateX(-50%);width:min(320px,calc(100% - 32px));background:rgba(28,28,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:9px}
-.zoom{position:absolute;z-index:500;right:12px;bottom:calc(49px + var(--sb) + 14px);display:grid;border-radius:10px;overflow:hidden;background:rgba(28,28,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.zoom{position:absolute;z-index:500;right:12px;bottom:calc(49px + var(--sb) + 80px);display:grid;border-radius:10px;overflow:hidden;background:rgba(28,28,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .zoom button{display:grid;place-items:center;width:44px;height:44px;color:var(--l1)}
 .zoom button+button{border-top:.5px solid var(--sep)}
 .zoom svg{width:19px;height:19px}
@@ -446,13 +457,14 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <section id="onb" class="hidden"><div class="wrap onb">
   <img class="logo" src="assets/logo-512.webp" width="132" height="132" alt="Fish Duel">
   <h1>Fish Duel</h1>
-  <p class="lead">Рыбалка в GTA VI на двоих.</p>
+  <p class="lead">Записывайте улов из GTA VI<br>и узнайте, чья рыба тяжелее.</p>
   <button class="avbtn" id="obAv" type="button"><span id="obAvPrev"></span><span id="obAvT">Добавить фото</span></button>
   <div class="group" style="margin-top:20px">
     <label class="row"><span class="t"><b>Имя</b></span><input class="tf" id="nameIn" maxlength="18" autocomplete="nickname" placeholder="Как тебя зовут" style="text-align:right"></label>
   </div>
   <button class="fbtn" id="createBtn" style="margin-top:16px">Создать комнату</button>
-  <div class="gh s" style="margin-top:30px">Или войди к другу</div>
+  <p class="obh">Получишь код и отправишь его другу.</p>
+  <div class="gh s" style="margin-top:30px">Есть код от друга?</div>
   <div class="group">
     <label class="row"><span class="t"><b>Код комнаты</b></span><input class="tf codein" id="codeIn" maxlength="5" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="ABCDE" style="text-align:right"></label>
   </div>
@@ -461,7 +473,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 </div></section>
 
 <!-- NAV BAR -->
-<header class="nb hidden" id="nb" data-vv="top"><div class="in"><button class="mebtn" id="meBtn" aria-label="Профиль"></button><span class="ct" id="ct"></span><span class="r"><button class="cbtn big" id="addBtn" aria-label="Записать улов"><svg class="i"><use href="#i-plus"/></svg></button></span></div></header>
+<header class="nb hidden" id="nb" data-vv="top"><div class="in"><button class="mebtn" id="meBtn" aria-label="Профиль"></button><span class="ct" id="ct"></span><span class="r"></span></div></header>
 
 <main id="app" class="hidden">
   <section class="page" id="p-board"><div class="wrap" id="board"></div></section>
@@ -471,10 +483,12 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <div id="bigmap"></div>
     <div class="seg mapseg" data-seg></div>
     <div class="mapf" id="mapf"></div>
+    <div class="maphint hidden" id="mapHint">Нажми на карту, чтобы отметить улов</div>
     <div class="zoom"><button id="zin" aria-label="Приблизить"><svg class="i"><use href="#i-plus"/></svg></button><button id="zout" aria-label="Отдалить"><svg class="i"><use href="#i-minus"/></svg></button></div>
   </section>
 </main>
 
+<button class="fab hidden" id="addBtn"><svg class="i"><use href="#i-plus"/></svg>Записать улов</button>
 <nav class="tabbar hidden" id="tabbar" data-vv="bottom"><div class="in">
   <button data-v="board"><svg class="i"><use href="#i-trophy"/></svg>Табло</button>
   <button data-v="map"><svg class="i"><use href="#i-map"/></svg>Карта</button>
@@ -490,9 +504,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
     <div class="pane" id="paneForm">
       <div class="snb"><button class="l" id="cancelBtn">Отмена</button><h2 id="shT">Новый улов</h2><button class="r" id="doneBtn" disabled>Готово</button></div>
       <div class="sbody">
-        <div class="group"><button class="row" id="spRow"><span class="t"><b>Вид</b></span><span class="v" id="spVal">Выбрать</span><svg class="i chev"><use href="#i-chev"/></svg></button></div>
+        <div class="group"><button class="row" id="spRow"><span class="t"><b>Вид рыбы</b></span><span class="v" id="spVal">Выбрать</span><svg class="i chev"><use href="#i-chev"/></svg></button></div>
         <div class="group" style="margin-top:20px">
           <div class="wbox">
+            <span class="wl">Вес рыбы</span>
             <div class="wfield" id="wKg"><input id="kgIn" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" aria-label="Вес в килограммах"><span class="u">кг</span></div>
             <div class="wfield lb hidden" id="wLb"><input id="lbIn" type="number" inputmode="numeric" min="0" placeholder="0" aria-label="Фунты"><span class="u">lb</span><input id="ozIn" type="number" inputmode="numeric" min="0" max="15" placeholder="0" aria-label="Унции"><span class="u">oz</span></div>
             <div class="seg" id="unitSeg"><i class="th"></i><button data-u="kg">кг</button><button data-u="lb">lb</button></div>
@@ -500,9 +515,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
         </div>
         <p class="gf" id="wHint"></p>
         <div class="group" style="margin-top:20px">
-          <button class="row" id="locRow"><span class="t"><b>Место</b></span><span class="v" id="locVal">Не указано</span><svg class="i chev"><use href="#i-chev"/></svg></button>
+          <button class="row" id="locRow"><span class="t"><b>Место на карте</b></span><span class="v" id="locVal">Необязательно</span><svg class="i chev"><use href="#i-chev"/></svg></button>
           <label class="row"><span class="t" style="flex:none"><b>Заметка</b></span><input class="tf" id="noteIn" maxlength="50" placeholder="Необязательно" style="text-align:right"></label>
         </div>
+        <button class="fbtn" id="saveBig" disabled style="margin-top:28px">Сохранить улов</button>
       </div>
     </div>
     <div class="pane right" id="paneSp">
@@ -686,12 +702,12 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'7 дней',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='3.0';
+const APPV='3.1';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
   $('#onb').classList.toggle('hidden',has);
-  for(const id of['#app','#tabbar','#nb'])$(id).classList.toggle('hidden',!has);
+  for(const id of['#app','#tabbar','#nb','#addBtn'])$(id).classList.toggle('hidden',!has);
   if(!has)return;
   for(const v of['board','log','species','map'])$('#p-'+v).classList.toggle('hidden',view!==v);
   document.querySelectorAll('.tabbar button').forEach(b=>{if(b.dataset.v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
@@ -705,7 +721,7 @@ const STANDALONE=navigator.standalone===true||matchMedia('(display-mode: standal
 const backupDays=()=>S.lastBackup?Math.floor((Date.now()-S.lastBackup)/864e5):null;
 const backupDue=()=>{const n=all().length,d=backupDays();return n>0&&n!==S.lastBackupCount&&(d===null||d>=7)};
 const a2hsDue=()=>IOS&&!STANDALONE&&!S.hideA2HS;
-const attention=()=>backupDue()||a2hsDue();
+const attention=()=>a2hsDue();
 const statusAv=(pid,x='')=>`<span class="avw">${avH(pid,x)}<i class="sd ${net==='online'?'online':''}" title="${net==='online'?'Онлайн':'Не в сети'}"></i></span>`;
 const rowIc=(n,c)=>`<span class="ico ${c}">${ic(n)}</span>`;
 const dKey=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()};
@@ -797,7 +813,7 @@ function renderBoard(){
   const who=c=>c.pid===S.pid?'Ты':esc(nm(c.pid)),dt=c=>new Date(c.ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
   const col=(p,cls,lead)=>{
     if(!p)return `<div class="col op invite"><div class="who"><span class="av">+</span><span>Соперник</span></div><button class="pbtn" data-share>${ic('share')}Пригласить</button></div>`;
-    return `<div class="col ${cls}${(a||b)&&!lead?' dim':''}"><div class="who">${p.pid===S.pid?avH(p.pid):statusAv(p.pid)}<span>${p.pid===S.pid?'Ты':esc(nm(p.pid))}</span></div>
+    return `<div class="col ${cls}${(a||b)&&!lead?' dim':''}"><div class="who">${p.pid===S.pid?avH(p.pid):statusAv(p.pid)}<span>${p.pid===S.pid?'Ты':esc(nm(p.pid))}${p.pid!==S.pid&&net==='online'?'<em class="onl">в сети</em>':''}</span></div>
       <div class="big">${p.best?kg(p.best.g)+'<small>кг</small>':'0<small>кг</small>'}</div>
       <div class="spn">${p.best?esc(p.best.sp):'Нет улова'}</div>${lead?`<span class="leadpill">${ic('crown')}Лидер</span>`:''}</div>`};
 
@@ -812,7 +828,7 @@ function renderBoard(){
   }else tail=`<div class="cempty"><span>Нет улова ${PL[period]}</span><button class="pbtn" data-add>${ic('plus')}Записать</button></div>`;
   let h=`<h1 class="lt">Табло</h1>
     <div class="gh first">Дуэль</div><div class="seg" data-seg>${segHTML()}</div>
-    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${tail}</div>`;
+    <div class="comp" id="comp">${L.length?`<p class="ccap">Самая тяжёлая рыба ${PL[period]}</p>`:''}<div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${tail}</div>`;
   if(!A.length){$('#board').innerHTML=h;return}
   const wop=rival(stats(A));if(wop)h+=weekSectionHTML(wop.pid);
 
@@ -861,7 +877,7 @@ function renderSpecies(){
   const got=new Set(A.map(c=>c.sp)),C=2*Math.PI*26,frac=Math.min(1,got.size/TOTAL);
   let h=`<h1 class="lt">Виды</h1>
     <div class="prog"><svg class="ring" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(118,118,128,.24)" stroke-width="9"/><circle cx="32" cy="32" r="26" fill="none" stroke="var(--me)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-frac)}" style="transition:stroke-dashoffset .8s var(--spring)"/></svg>
-    <div><b>${got.size} из ${TOTAL}</b><span>поймано вдвоём</span><div class="legend"><span><i class="me"></i>Ты ${Object.keys(me.sp).length}</span>${op?`<span><i class="op"></i>${esc(nm(op.pid))} ${Object.keys(op.sp).length}</span>`:''}</div></div></div>
+    <div><b>${got.size} из ${TOTAL}</b><span>поймано вдвоём</span><div class="legend"><span style="color:var(--me)"><b>Ты</b> ${Object.keys(me.sp).length}</span>${op?`<span style="color:var(--op)"><b>${esc(nm(op.pid))}</b> ${Object.keys(op.sp).length}</span>`:''}</div></div></div>
     <div class="search"><svg class="i"><use href="#i-search"/></svg><input id="spq" placeholder="Поиск" value="${esc(S.spq||'')}" autocomplete="off" aria-label="Поиск вида"></div><div id="spGroup">`;
   h+=spRows(me,op,got,(S.spq||'').toLowerCase());
   $('#species').innerHTML=h+'</div>';
@@ -871,7 +887,7 @@ function spRows(me,op,got,q){
   const known=[...new Set([...BASE.map(b=>b[0]),...all().map(c=>c.sp)])].filter(s=>!q||s.toLowerCase().includes(q)||(RU[s]||'').toLowerCase().includes(q));
   const row=s=>{const x=me.sp[s],y=op&&op.sp[s];
     return `<button class="row" data-spd="${esc(s)}"><span class="dots"><i class="${x?'me':''}"></i><i class="${y?'op':''}"></i></span><span class="t"><b>${esc(s)}</b>${RU[s]?`<em>${esc(RU[s])}</em>`:''}</span>
-      <span class="bests">${x||y?`<span class="${x?'me':'no'}">${x?kg(x.g):'—'}</span><span class="${y?'op':'no'}">${y?kg(y.g):'—'}</span>`:''}</span>${ic('chev','chev')}</button>`};
+      <span class="bests">${x||y?`<span class="${x?'me':'no'}">${x?kg(x.g)+'<small>кг</small>':'—'}</span><span class="${y?'op':'no'}">${y?kg(y.g)+'<small>кг</small>':'—'}</span>`:''}</span>${ic('chev','chev')}</button>`};
   const caught=known.filter(s=>got.has(s)).sort((a,b)=>a.localeCompare(b)),rest=known.filter(s=>!got.has(s)).sort((a,b)=>a.localeCompare(b));
   if(!caught.length&&!rest.length)return '<div class="group" style="margin-top:12px"><div class="row"><span class="t"><b style="color:var(--l2)">Ничего не найдено</b></span></div></div>';
   return (caught.length?`<div class="gh s">Пойманные</div><div class="group">${caught.map(row).join('')}</div>`:'')+(rest.length?`<div class="gh s">Ещё никто не поймал</div><div class="group">${rest.map(row).join('')}</div>`:'');
@@ -888,12 +904,12 @@ function renderProfile(){
   $('#s2B').innerHTML=`<div class="prof"><button id="avBtn" class="profav" aria-label="Фото">${avH(S.pid)}</button><b>${esc(nm(S.pid))}</b><button class="link" id="avBtn2">${S.avatars[S.pid]?'Изменить фото':'Добавить фото'}</button></div>
     ${a2hsDue()?`<div class="tip"><span class="ic">${ic('share')}</span><div class="t"><b>Добавь на экран «Домой»</b><p>«Поделиться», затем «На экран Домой». Так iPhone не сотрёт историю.</p></div><button class="x2" data-hide="A2HS" aria-label="Скрыть">${ic('x')}</button></div>`:''}
     <div class="gh s">Комната</div><div class="group">
-      <button class="row ii" data-share>${rowIc('share','c2')}<span class="t"><b>Код комнаты</b></span><span class="v num">${esc(S.room)}</span></button>
+      <button class="row ii" data-share>${rowIc('share','c2')}<span class="t"><b>Пригласить друга</b><em>Отправить код комнаты</em></span><span class="v num">${esc(S.room)}</span></button>
       <div class="row ii">${rowIc('wifi',net==='online'?'c3':'gray')}<span class="t"><b>Статус</b></span><span class="v">${st}</span></div>
       <button class="row ii" id="renameBtn">${rowIc('edit','c5')}<span class="t"><b>Имя</b></span><span class="v">${esc(nm(S.pid))}</span>${ic('chev','chev')}</button></div>
-    <div class="gh s">История</div><div class="group">
+    <div class="gh s">Резервная копия</div><div class="group">
       <div class="row ii">${rowIc('list','c4')}<span class="t"><b>Записей</b></span><span class="v num">${all().length}</span></div>
-      <button class="row ii" data-export>${rowIc('save',backupDue()?'red':'c3')}<span class="t"><b>Сохранить копию</b><em>${d===null?'Копии ещё нет':`Последняя ${d===0?'сегодня':`${d} ${plural(d,'день','дня','дней')} назад`}`}</em></span>${backupDue()?'<i class="rdot"></i>':''}</button>
+      <button class="row ii" data-export>${rowIc('save','c3')}<span class="t"><b>Сохранить копию</b><em>${d===null?'Копии ещё нет':`Последняя ${d===0?'сегодня':`${d} ${plural(d,'день','дня','дней')} назад`}`}</em></span></button>
       <button class="row ii" id="importBtn">${rowIc('restore','gray')}<span class="t"><b>Восстановить из файла</b></span></button></div>
     <p class="gf">Улов хранится в комнате в облаке и копией на телефоне. Без интернета запись отправится, когда связь появится.</p>
     <div class="group" style="margin-top:24px"><button class="row red" id="leaveBtn"><span class="t"><b>${S.owner===S.pid?'Закрыть комнату':'Выйти из комнаты'}</b></span></button></div>
@@ -936,9 +952,9 @@ const mkIcon=(cls,pid)=>{const a=S.avatars[pid];return L.divIcon({className:'',h
 function renderMap(){
   document.querySelector('#p-map [data-seg]').innerHTML=segHTML();
   const w=S.mapWho||'all',op=rival(stats(all()));
-  $('#mapf').innerHTML=`<button class="chip${w==='all'?' on':''}" data-mw="all">Все</button><button class="chip${w==='me'?' on':''}" data-mw="me">${avH(S.pid,'xs')}Ты</button>${op?`<button class="chip${w==='op'?' on':''}" data-mw="op">${avH(op.pid,'xs')}${esc(nm(op.pid))}</button>`:''}<button class="chip${S.mapSp?' on':''}" data-msp>${S.mapSp?esc(S.mapSp):'Все виды'}${ic('chevd')}</button>`;
+  $('#mapHint').classList.toggle('hidden',!!S.mapHint);$('#mapf').innerHTML=`<button class="chip${w==='all'?' on':''}" data-mw="all">Все</button><button class="chip${w==='me'?' on':''}" data-mw="me">${avH(S.pid,'xs')}Ты</button>${op?`<button class="chip${w==='op'?' on':''}" data-mw="op">${avH(op.pid,'xs')}${esc(nm(op.pid))}</button>`:''}<button class="chip${S.mapSp?' on':''}" data-msp>${S.mapSp?esc(S.mapSp):'Все виды'}${ic('chevd')}</button>`;
   if(!bigmap){bigmap=makeMap($('#bigmap'));layer=L.layerGroup().addTo(bigmap);
-    bigmap.on('click',e=>{const xy=toXY(e.latlng);L.popup({closeButton:false,offset:[0,-4]}).setLatLng(e.latlng).setContent(`<button class="pbtn" data-addat="${xy.x.toFixed(5)},${xy.y.toFixed(5)}">${ic('plus')}Улов здесь</button>`).openOn(bigmap)});
+    bigmap.on('click',e=>{if(!S.mapHint){S.mapHint=1;save();$('#mapHint').classList.add('hidden')}const xy=toXY(e.latlng);L.popup({closeButton:false,offset:[0,-4]}).setLatLng(e.latlng).setContent(`<button class="pbtn" data-addat="${xy.x.toFixed(5)},${xy.y.toFixed(5)}">${ic('plus')}Улов здесь</button>`).openOn(bigmap)});
     bigmap.on('popupopen',e=>{const b=e.popup.getElement().querySelector('[data-addat]');if(b)b.onclick=()=>{const[x,y]=b.dataset.addat.split(',').map(Number);bigmap.closePopup();openSheet({x,y,m:2})}});
     $('#zin').onclick=()=>bigmap.zoomIn(.75);$('#zout').onclick=()=>bigmap.zoomOut(.75)}
   setTimeout(()=>{if(!bigmap._fit){fitAll(bigmap);bigmap._fit=1}else bigmap.invalidateSize();placePins()},0);
@@ -991,7 +1007,7 @@ function openSheet(at,eid){
   const e=eid&&S.catches[eid];editId=e?eid:null;
   pick=e?e.sp:null;loc=at||(e&&e.x!=null?{x:e.x,y:e.y,m:2}:null);['#kgIn','#lbIn','#ozIn','#noteIn','#spSearch'].forEach(s=>$(s).value='');
   setUnit(unit);if(e){setG(e.g);$('#noteIn').value=e.note||''}
-  $('#shT').textContent=e?'Изменить улов':'Новый улов';showPane('form');formState();
+  $('#shT').textContent=e?'Изменить улов':'Новый улов';$('#saveBig').textContent=e?'Сохранить изменения':'Сохранить улов';showPane('form');formState();
   $('#ov').classList.add('open');$('#sheet').classList.add('open');document.body.style.overflow='hidden';
   if(!e)setTimeout(()=>showPane('sp'),360);
 }
@@ -1010,13 +1026,13 @@ function setUnit(u){
 }
 function formState(){
   $('#spVal').textContent=pick||'Выбрать';$('#spVal').style.color=pick?'var(--l1)':'';
-  $('#locVal').textContent=loc?'Отмечено':'Не указано';$('#locVal').style.color=loc?'var(--tint)':'';
+  $('#locVal').textContent=loc?'Отмечено':'Необязательно';$('#locVal').style.color=loc?'var(--tint)':'';
   const g=readG(),o=parseInt($('#ozIn').value||'0',10);let hint='',bad=false;
   if(unit==='lb'&&o>15){hint='В фунте 16 унций, поэтому oz от 0 до 15.';bad=true}
   else if(g){const pb=pick&&stats(all())[S.pid].sp[pick];hint=(unit==='lb'?kgT(g):lbT(g))+(pb?(g>pb.g?`, новый личный рекорд (был ${kgT(pb.g)})`:`, твой рекорд ${kgT(pb.g)}`):'')}
   fit($('#kgIn'),4);fit($('#lbIn'),1);fit($('#ozIn'),1);
   $('#wHint').textContent=hint;$('#wHint').style.color=bad?'var(--red)':'';
-  $('#doneBtn').disabled=!(pick&&g>0&&g<=500000&&!bad);
+  $('#doneBtn').disabled=$('#saveBig').disabled=!(pick&&g>0&&g<=500000&&!bad);
 }
 function fit(el,min){el.style.width=Math.max(min,(el.value||el.placeholder).length)*0.62+0.3+'em'}
 function renderSpList(){
@@ -1087,7 +1103,7 @@ document.addEventListener('click',e=>{
 });
 $('#s2Done').onclick=closeS2;$('#ov3').onclick=closeS2;
 $('#addBtn').onclick=()=>openSheet();
-$('#cancelBtn').onclick=closeSheet;$('#ov').onclick=closeSheet;$('#doneBtn').onclick=saveCatch;
+$('#cancelBtn').onclick=closeSheet;$('#ov').onclick=closeSheet;$('#doneBtn').onclick=saveCatch;$('#saveBig').onclick=saveCatch;
 $('#spRow').onclick=()=>showPane('sp');$('#backBtn').onclick=()=>showPane('form');
 $('#locRow').onclick=openPicker;
 $('#spSearch').addEventListener('input',renderSpList);
