@@ -9,7 +9,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fish Duel">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ff2d78'/><stop offset='1' stop-color='%23ff9f0a'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='url(%23g)'/><path d='M15 32c5-7.5 11-11 18-11 5.5 0 10 3.5 15 11-5 7.5-9.5 11-15 11-7 0-13-3.5-18-11z' fill='white'/><path d='M15 32 6 24v16z' fill='white'/><circle cx='41' cy='30' r='2.2' fill='%23ff2d78'/></svg>">
+<link rel="icon" type="image/png" href="assets/icon-64.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -94,7 +96,7 @@ button.row:active,a.row:active{background:var(--g2)}
 .av.ph{background-size:cover;background-position:center;color:transparent}
 .av.ph.me{box-shadow:0 0 0 2px var(--g1),0 0 0 4px var(--me)} .av.ph.op{box-shadow:0 0 0 2px var(--g1),0 0 0 4px var(--op)}
 .avbtn{display:grid;justify-items:center;gap:8px;margin:26px 0 0;color:var(--tint);font-size:15px}
-.avbtn .av{width:96px;height:96px;font-size:38px}
+.avbtn .av{width:80px;height:80px;font-size:32px}
 .avbtn .av:not(.ph){background:var(--g2);color:var(--l2)}
 .who span{font-size:15px;font-weight:600;color:var(--l2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .big{margin-top:14px;font-family:var(--round);font-weight:700;font-size:clamp(36px,11vw,48px);line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -269,7 +271,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .toast svg{width:17px;height:17px;stroke-width:2.4}
 
 /* ---------- onboarding ---------- */
-.onb{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:calc(40px + var(--st)) 0 calc(32px + var(--sb))}
+.onb{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:calc(40px + var(--st)) 16px calc(32px + var(--sb))}
+.onb .logo{margin:0 auto}
+.onb h1,.onb .lead{text-align:center}
+.logo{display:block;width:132px;height:132px;border-radius:50%;filter:drop-shadow(0 18px 40px rgba(255,45,120,.35))}
 .appicon{width:88px;height:88px;border-radius:20px;background:var(--meG);display:grid;place-items:center;box-shadow:0 18px 40px -12px rgba(255,45,120,.6)}
 .appicon svg{width:52px;height:52px;color:#fff;fill:#fff;stroke:none}
 .onb h1{margin-top:22px;font-size:34px;font-weight:700;letter-spacing:.012em}
@@ -304,7 +309,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 
 <!-- ONBOARDING -->
 <section id="onb" class="hidden"><div class="wrap onb">
-  <div class="appicon"><svg viewBox="0 0 24 24"><use href="#i-fishf"/></svg></div>
+  <img class="logo" src="assets/logo-512.webp" width="132" height="132" alt="Fish Duel">
   <h1>Fish Duel</h1>
   <p class="lead">Рыбалка в GTA VI на двоих.</p>
   <button class="avbtn" id="obAv" type="button"><span id="obAvPrev"></span><span id="obAvT">Добавить фото</span></button>
@@ -386,6 +391,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <div class="alert" id="alert" role="alertdialog" aria-modal="true"></div>
 <div class="toast" id="toast" role="status"></div>
 <input type="file" id="avFile" accept="image/*" class="hidden">
+<input type="file" id="bkFile" accept="application/json,.json" class="hidden">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -541,6 +547,11 @@ function renderBoard(){
     <button class="row" id="avBtn"><span class="t"><b>Твоё фото</b></span>${avH(S.pid,'sm')}${ic('chev','chev')}</button>
     <button class="row" id="renameBtn"><span class="t"><b>Твоё имя</b></span><span class="v">${esc(nm(S.pid))}</span>${ic('chev','chev')}</button>
     <button class="row red" id="leaveBtn"><span class="t"><b>Выйти из комнаты</b></span></button></div>
+    <div class="gh">История</div><div class="group">
+    <div class="row"><span class="t"><b>Записей</b></span><span class="v num">${all().length}</span></div>
+    <button class="row tint" id="exportBtn"><span class="t"><b>Сохранить копию в файл</b></span></button>
+    <button class="row tint" id="importBtn"><span class="t"><b>Восстановить из файла</b></span></button></div>
+    <p class="gf">История хранится на обоих телефонах и сама восстанавливается от друга при подключении. На iPhone добавь сайт на экран «Домой»: так Safari не удалит данные.</p>
     <p class="gf">Карта © Rockstar Games. Неофициальный фан-проект.</p>`;
   $('#board').innerHTML=h;
 }
@@ -756,6 +767,27 @@ document.addEventListener('click',e=>{
 ['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
 
 /* ---------- boot ---------- */
+/* ---------- history backup ---------- */
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+document.addEventListener('click',e=>{
+  if(e.target.closest('#exportBtn')){
+    const data={app:'fish-duel',v:1,exported:new Date().toISOString(),room:S.room,names:S.names,avatars:S.avatars,catches:Object.values(S.catches),deleted:Object.keys(S.deleted)};
+    const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=`fish-duel-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+    S.lastBackup=Date.now();save();toast('Копия сохранена');return}
+  if(e.target.closest('#importBtn')){const f=$('#bkFile');f.value='';f.click()}
+});
+$('#bkFile').addEventListener('change',async()=>{
+  const file=$('#bkFile').files[0];if(!file)return;
+  try{
+    const d=JSON.parse(await file.text());if(!d||d.app!=='fish-duel'||!Array.isArray(d.catches))throw 0;
+    const before=all().length;
+    for(const c of d.catches){if(okCatch(c)&&!S.deleted[c.id]&&!S.catches[c.id])S.catches[c.id]=clean(c)}
+    if(d.names&&typeof d.names==='object')for(const[k,v]of Object.entries(d.names)){if(typeof v==='string'&&v.length<=18&&!S.names[k])S.names[k]=v}
+    if(d.avatars&&typeof d.avatars==='object')for(const[k,v]of Object.entries(d.avatars)){if(avOk(v)&&!S.avatars[k])S.avatars[k]=v}
+    save();send(hello());render();const n=all().length-before;toast(n?`Восстановлено записей: ${n}`:'Все записи уже были на месте');
+  }catch(err){toast('Это не файл копии Fish Duel')}
+});
 renderObAv();
 const hash=(location.hash||'').slice(1).toUpperCase().replace(/[^A-Z0-9]/g,'');
 if(S.names[S.pid])$('#nameIn').value=S.names[S.pid];
