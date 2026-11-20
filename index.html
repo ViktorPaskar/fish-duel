@@ -485,14 +485,14 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 'use strict';
 /* ---------- the 35 species of the in-game fishing log ---------- */
 const BASE=[
-  ['American Eel','Американский угорь'],['Atlantic Spadefish',''],['Atlantic Spanish Mackerel','Пятнистая королевская макрель'],
+  ['American Eel','Американский угорь'],['Atlantic Spadefish','Атлантический хетодиптерус'],['Atlantic Spanish Mackerel','Пятнистая королевская макрель'],
   ['Atlantic Tarpon','Атлантический тарпон'],['Thread Herring','Атлантическая нитепёрая сельдь'],['Bluegill','Синежаберный солнечник'],
-  ['Candy Fish',''],['Channel Catfish','Канальный сомик'],['Lake Chubsucker',''],['Greater Amberjack','Большая сериола'],
-  ['Great Barracuda','Большая барракуда'],['Largemouth Bass','Большеротый окунь'],['Rock Sea Bass',''],['Striped Bass','Полосатый лаврак'],
+  ['Candy Fish','Конфетная рыба'],['Channel Catfish','Канальный сомик'],['Lake Chubsucker','Озёрный эримизон'],['Greater Amberjack','Большая сериола'],
+  ['Great Barracuda','Большая барракуда'],['Largemouth Bass','Большеротый окунь'],['Rock Sea Bass','Скальный каменный окунь'],['Striped Bass','Полосатый лаврак'],
   ['Cobia','Кобия'],['Black Drum','Чёрный горбыль'],['Green Moray Eel','Зелёная мурена'],['Spotted Moray Eel','Пятнистая мурена'],
-  ['Leonida Gar',''],['Black Grouper','Чёрный групер'],['Tiger Grouper','Тигровый групер'],['Bluestriped Grunt',''],
+  ['Leonida Gar','Панцирник Леониды'],['Black Grouper','Чёрный групер'],['Tiger Grouper','Тигровый групер'],['Bluestriped Grunt','Синеполосый хемулон'],
   ['Hogfish','Свиной губан'],['Red Lionfish','Полосатая крылатка'],['Mahi Mahi','Золотая макрель'],['Stoplight Parrotfish','Рыба-попугай'],
-  ['Permit','Трахинот'],['Redfin Pickerel','Американская щука'],['Littlehead Porgy',''],['Salt Fish',''],
+  ['Permit','Трахинот'],['Redfin Pickerel','Американская щука'],['Littlehead Porgy','Малоголовый морской карась'],['Salt Fish','Солёная рыба'],
   ['Northern Red Snapper','Красный луциан'],['Yellowtail Snapper','Желтохвостый луциан'],['Common Snook','Обыкновенный снук'],
   ['Redbreast Sunfish','Краснобрюхий солнечник'],['Yellowfin Tuna','Желтопёрый тунец']
 ];
@@ -599,7 +599,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'Неделя',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='2.1';
+const APPV='2.2';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
