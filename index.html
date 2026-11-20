@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fish Duel</title>
+<meta name="description" content="Рибальська дуель для двох у GTA VI: вага, види, таблиця лідерів онлайн.">
+<meta name="theme-color" content="#070d1a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🎣</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070d1a; --bg2:#0c1528; --card:rgba(255,255,255,.045); --card2:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.09); --text:#eef3ff; --mute:#8d9bb8; --dim:#5d6a86;
+  --pink:#ff4f8b; --orange:#ffb35c; --teal:#2de2c8; --blue:#5aa8ff; --gold:#ffd166; --red:#ff6b6b;
+  --r:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:-20vh -20vw auto;height:80vh;z-index:-2;pointer-events:none;
+  background:radial-gradient(60% 55% at 25% 30%,rgba(255,79,139,.28),transparent 70%),radial-gradient(50% 50% at 80% 20%,rgba(255,179,92,.20),transparent 70%),radial-gradient(60% 60% at 60% 85%,rgba(45,226,200,.14),transparent 70%)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.35;
+  background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(255,255,255,.012) 3px 4px)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.wrap{max-width:880px;margin:0 auto;padding:18px 16px 80px}
+h1,h2,.disp{font-family:Unbounded,Inter,sans-serif;letter-spacing:-.01em}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.logo{display:flex;align-items:center;gap:10px;font-family:Unbounded;font-weight:800;font-size:18px;letter-spacing:.02em}
+.logo b{background:linear-gradient(90deg,var(--pink),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo .mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--pink),var(--orange));font-size:18px;box-shadow:0 6px 24px rgba(255,79,139,.35)}
+.room{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600}
+.room .code{font-family:Unbounded;letter-spacing:.12em}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.dot.online{background:var(--teal);box-shadow:0 0 0 4px rgba(45,226,200,.18)}
+.dot.waiting{background:var(--orange);animation:pulse 1.6s infinite}
+.dot.connecting{background:var(--blue);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sec{margin-top:28px}
+.sec h2{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sec h2 small{font-family:Inter;font-weight:500;font-size:13px;color:var(--mute)}
+.muted{color:var(--mute)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:14px;font-weight:600;transition:transform .15s,filter .15s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:linear-gradient(90deg,var(--pink),var(--orange));color:#1a0710;box-shadow:0 10px 30px rgba(255,79,139,.3)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.ghost{background:var(--card2);border:1px solid var(--line)}
+.btn.ghost:hover{background:rgba(255,255,255,.12)}
+.btn.sm{height:36px;padding:0 14px;border-radius:11px;font-size:13px}
+.inp{width:100%;height:50px;padding:0 16px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line);outline:none;transition:border .15s}
+.inp:focus{border-color:rgba(255,79,139,.6)}
+label.l{display:block;font-size:12px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px}
+
+/* setup */
+.setup{max-width:460px;margin:6vh auto 0;text-align:center}
+.setup h1{font-size:clamp(34px,8vw,52px);line-height:1.02;font-weight:800}
+.setup h1 span{background:linear-gradient(90deg,var(--pink),var(--orange) 60%,var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.setup p.lead{color:var(--mute);margin:14px auto 28px;max-width:360px}
+.setup .card{padding:22px;text-align:left}
+.or{display:flex;align-items:center;gap:12px;color:var(--dim);font-size:12px;margin:18px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.codeinp{text-transform:uppercase;letter-spacing:.3em;font-family:Unbounded;text-align:center}
+.bob{font-size:56px;display:inline-block;animation:bob 3s ease-in-out infinite;margin-bottom:6px}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-6deg)}}
+
+/* hero duel */
+.duel{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px}
+.pl{position:relative;padding:18px 16px 16px;border-radius:24px;background:var(--card);border:1px solid var(--line);overflow:hidden;min-width:0;transition:border .3s,box-shadow .3s}
+.pl.lead{border-color:rgba(255,209,102,.55);box-shadow:0 0 0 1px rgba(255,209,102,.25),0 18px 50px rgba(255,209,102,.12)}
+.pl.me::before,.pl.op::before{content:"";position:absolute;inset:0;opacity:.5;pointer-events:none}
+.pl.me::before{background:radial-gradient(120% 80% at 0% 0%,rgba(255,79,139,.22),transparent 60%)}
+.pl.op::before{background:radial-gradient(120% 80% at 100% 0%,rgba(45,226,200,.2),transparent 60%)}
+.pl .who{position:relative;display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;min-width:0}
+.pl .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl .tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.08);color:var(--mute);flex:none}
+.crown{position:absolute;top:12px;right:14px;font-size:20px;filter:drop-shadow(0 4px 10px rgba(255,209,102,.5));animation:bob 2.4s ease-in-out infinite}
+.pl .big{position:relative;font-family:Unbounded;font-weight:800;font-size:clamp(28px,6.4vw,46px);line-height:1;margin:18px 0 6px;white-space:nowrap}
+.pl .big small{font-size:.42em;font-weight:600;color:var(--mute);margin-left:2px}
+.pl .sp{position:relative;font-size:13px;color:var(--mute);min-height:19px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl .mini{position:relative;display:flex;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--mute)}
+.pl .mini b{display:block;color:var(--text);font-size:15px;font-weight:700}
+.vs{display:grid;place-items:center;font-family:Unbounded;font-weight:800;font-size:14px;color:var(--dim);width:28px}
+.verdict{margin-top:12px;text-align:center;font-size:14px;color:var(--mute);min-height:20px}
+.verdict b{color:var(--gold)}
+.pl.empty .big{color:var(--dim)}
+.waitbox{position:relative;margin-top:16px;font-size:13px;color:var(--mute)}
+.waitbox .btn{margin-top:10px;width:100%}
+
+.tabs{display:flex;gap:6px;padding:5px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin:20px 0 0}
+.tabs button{flex:1;height:38px;border-radius:10px;font-size:13px;font-weight:600;color:var(--mute);transition:background .2s,color .2s}
+.tabs button.on{background:rgba(255,255,255,.1);color:var(--text)}
+
+.cta{white-space:nowrap;position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:20;height:58px;padding:0 28px;border-radius:999px;font-size:16px;box-shadow:0 14px 40px rgba(255,79,139,.45),0 0 0 6px rgba(7,13,26,.7)}
+
+/* leaderboard */
+.lb{overflow:hidden}
+.lb table{width:100%;border-collapse:collapse}
+.lb th,.lb td{padding:13px 14px;text-align:right;border-bottom:1px solid var(--line);font-size:14px;white-space:nowrap}
+.lb th:first-child,.lb td:first-child{text-align:left;color:var(--mute);font-weight:500;white-space:normal}
+.lb thead th{font-size:12px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;background:rgba(255,255,255,.03);max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.lb tr:last-child td{border-bottom:0}
+.lb td.win{color:var(--gold);font-weight:700}
+.lb td.win::after{content:" ★";font-size:11px}
+
+/* species records */
+.spl{display:grid;gap:8px}
+.spr{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.spr .n{min-width:0}
+.spr .n b{display:block;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spr .n span{font-size:12px;color:var(--mute)}
+.spr .w{font-size:13px;text-align:right;color:var(--mute);min-width:70px}
+.spr .w.win{color:var(--text);font-weight:700}
+.spr .w i{display:block;font-style:normal;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90px;margin-left:auto}
+.spr .w.win i{color:var(--gold)}
+
+/* feed */
+.feed{display:grid;gap:8px}
+.it{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-family:Unbounded;font-size:14px;flex:none}
+.av.me{background:linear-gradient(135deg,var(--pink),var(--orange));color:#1a0710}
+.av.op{background:linear-gradient(135deg,var(--teal),var(--blue));color:#04121a}
+.it .m{flex:1;min-width:0}
+.it .m b{font-weight:600;font-size:14px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it .m span{font-size:12px;color:var(--mute);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it .wt{font-family:Unbounded;font-weight:600;font-size:15px;text-align:right;white-space:nowrap}
+.it .wt small{display:block;font-family:Inter;font-size:11px;color:var(--mute);font-weight:500}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:2px}
+.badge.rr{background:rgba(255,209,102,.16);color:var(--gold)}
+.badge.pr{background:rgba(45,226,200,.14);color:var(--teal)}
+.del{width:30px;height:30px;border-radius:9px;color:var(--dim);flex:none;font-size:16px}
+.del:hover{background:rgba(255,107,107,.12);color:var(--red)}
+.empty-note{padding:26px;text-align:center;color:var(--mute);border:1px dashed var(--line);border-radius:16px}
+
+/* collection */
+.prog{padding:16px}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;margin:10px 0 14px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pink),var(--orange),var(--teal));transition:width .6s}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:6px 10px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--dim)}
+.chip.got{color:var(--text);border-color:rgba(45,226,200,.35);background:rgba(45,226,200,.08)}
+.chip.got.both{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.08)}
+
+/* info */
+.info{padding:18px;font-size:13px;color:var(--mute)}
+.info ul{list-style:none;display:grid;gap:8px}
+.info li{padding-left:18px;position:relative}
+.info li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:2px;background:var(--orange)}
+.info b{color:var(--text);font-weight:600}
+.info a{color:var(--teal);text-decoration:none}
+.foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-top:24px;font-size:12px;color:var(--dim)}
+.link{color:var(--mute);text-decoration:underline;text-underline-offset:3px;font-size:12px}
+
+/* sheet */
+.ov{position:fixed;inset:0;z-index:40;background:rgba(3,6,14,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center}
+.ov.open{display:flex;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{width:100%;max-width:560px;max-height:92vh;overflow:auto;background:var(--bg2);border:1px solid var(--line);border-radius:26px 26px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));animation:up .28s cubic-bezier(.2,.9,.3,1)}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@media(min-width:700px){.ov{align-items:center}.sheet{border-radius:26px;padding-bottom:22px}}
+.grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 14px}
+.sheet h3{font-family:Unbounded;font-size:20px;font-weight:600;margin-bottom:16px}
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;max-height:236px;overflow:auto;padding:2px}
+.sopt{text-align:left;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13px;font-weight:600;line-height:1.25;transition:border .15s,background .15s}
+.sopt span{display:block;font-weight:400;font-size:11px;color:var(--mute);margin-top:2px}
+.sopt.on{border-color:var(--pink);background:rgba(255,79,139,.12)}
+.sopt.new{border-style:dashed;color:var(--mute)}
+.wrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.unit{position:relative}
+.unit .inp{padding-right:44px;font-family:Unbounded;font-size:20px;font-weight:600;height:62px}
+.unit em{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--mute);font-weight:600;font-size:13px}
+.hint{font-size:12px;color:var(--mute);margin-top:8px;min-height:18px}
+.hint.err{color:var(--red)}
+.fg{margin-top:18px}
+
+.toast{position:fixed;left:50%;top:max(16px,env(safe-area-inset-top));transform:translate(-50%,-140%);z-index:60;padding:13px 18px;border-radius:16px;background:#141e36;border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.5);font-weight:600;font-size:14px;transition:transform .35s cubic-bezier(.2,.9,.3,1.2);max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translate(-50%,0)}
+.toast.gold{border-color:rgba(255,209,102,.5);color:var(--gold)}
+.burst{position:fixed;z-index:55;pointer-events:none;font-size:26px;animation:fly 1.4s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+.hidden{display:none!important}
+@media(max-width:520px){
+  .duel{grid-template-columns:1fr 1fr;gap:8px}
+  .vs{display:none}
+  .pl{padding:14px 12px 12px;border-radius:20px}
+  .pl .mini{gap:14px}
+  .pl .mini div:nth-child(3){display:none}
+  .lb th,.lb td{padding:12px 10px;font-size:13px}
+  .spr{grid-template-columns:1fr auto auto;gap:8px;padding:11px 12px}
+  .spr .w{min-width:58px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><div class="mark">🎣</div><div>FISH <b>DUEL</b></div></div>
+    <button class="room hidden" id="roomChip" title="Поділитися кодом кімнати"><i class="dot" id="dot"></i><span id="stTxt"></span><span class="code" id="codeTxt"></span></button>
+  </header>
+
+  <!-- SETUP -->
+  <section id="setup" class="setup hidden">
+    <div class="bob">🐟</div>
+    <h1>У кого риба<br><span>важча?</span></h1>
+    <p class="lead">Рибальська дуель для двох у GTA VI. Записуйте улов, і таблиця оновиться в обох одразу.</p>
+    <div class="card">
+      <label class="l" for="nameIn">Твоє ім'я</label>
+      <input class="inp" id="nameIn" maxlength="18" placeholder="Напр. Віктор" autocomplete="nickname">
+      <button class="btn pri" id="createBtn" style="width:100%;margin-top:14px">Створити кімнату</button>
+      <div class="or">або увійти до друга</div>
+      <div class="row">
+        <input class="inp codeinp" id="codeIn" maxlength="5" placeholder="КОД" autocomplete="off" spellcheck="false">
+        <button class="btn ghost" id="joinBtn" style="flex:0 0 auto">Увійти</button>
+      </div>
+      <div class="hint err" id="setupErr"></div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main id="main" class="hidden">
+    <div class="duel" id="duel"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="tabs" id="tabs">
+      <button data-p="today" class="on">Сьогодні</button>
+      <button data-p="week">7 днів</button>
+      <button data-p="all">Весь час</button>
+    </div>
+
+    <section class="sec">
+      <h2>Таблиця лідерів <small id="lbSub"></small></h2>
+      <div class="card lb" id="lb"></div>
+    </section>
+
+    <section class="sec">
+      <h2>Рекорди за видами <small>хто тримає найважчу</small></h2>
+      <div class="spl" id="spl"></div>
+    </section>
+
+    <section class="sec">
+      <h2>Улов <small id="feedSub"></small></h2>
+      <div class="feed" id="feed"></div>
+    </section>
+
+    <section class="sec">
+      <h2>Колекція видів <small id="colSub"></small></h2>
+      <div class="card prog" id="col"></div>
+    </section>
+
+    <section class="sec">
+      <h2>Що відомо про рибалку в GTA VI</h2>
+      <div class="card info">
+        <ul>
+          <li>Після улову гра показує <b>вид, вагу в lb і oz</b> та твій рекорд для цього виду (позначка New Record).</li>
+          <li>Журнал: <b>Пауза → Progress → Animals → Fishing</b>. Там 35 видів і найважчий улов кожного.</li>
+          <li>У вільному режимі рибу можна лише <b>відпустити</b> (Throw Back). Продати її не можна.</li>
+          <li>Завдання Кела: спіймати <b>Stoplight Parrotfish важчу за 2 lb</b> і сфотографувати. Дає трофей «Baited My Tackle».</li>
+          <li>Види з позначкою «?» знайдено на вікі ще до релізу, у грі вони поки не підтверджені. Нових риб ви додасте самі через «Інший вид».</li>
+        </ul>
+        <p style="margin-top:12px">Джерела: <a href="https://leonipedia.com/guides/fishing/" target="_blank" rel="noopener">Leonipedia</a>, <a href="https://outputlag.com/guides/gta-6-fishing-guide/" target="_blank" rel="noopener">Outputlag</a>, <a href="https://meowdb.com/gta6/wildlife" target="_blank" rel="noopener">MeowDB</a>, <a href="https://thegameswiki.com/gta6/wiki/fishing" target="_blank" rel="noopener">GamesWiki</a>.</p>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>Фанатський проєкт, не пов'язаний із Rockstar Games.</span>
+      <span><button class="link" id="renameBtn">Змінити ім'я</button> · <button class="link" id="leaveBtn">Вийти з кімнати</button></span>
+    </div>
+  </main>
+</div>
+
+<button class="btn pri cta hidden" id="addBtn">＋ Записати улов</button>
+
+<div class="ov" id="ov">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">
+    <div class="grab"></div>
+    <h3 id="shT">Новий улов</h3>
+    <label class="l">Вид риби</label>
+    <input class="inp" id="spSearch" placeholder="Пошук…" style="height:42px;margin-bottom:8px" autocomplete="off">
+    <div class="sgrid" id="sgrid"></div>
+    <input class="inp hidden" id="spCustom" maxlength="40" placeholder="Назва як у грі, напр. Red Snapper" style="margin-top:8px">
+    <div class="fg">
+      <label class="l">Вага (як на екрані улову)</label>
+      <div class="wrow">
+        <div class="unit"><input class="inp" id="lbIn" type="number" inputmode="numeric" min="0" max="999" placeholder="0"><em>lb</em></div>
+        <div class="unit"><input class="inp" id="ozIn" type="number" inputmode="numeric" min="0" max="15" placeholder="0"><em>oz</em></div>
+      </div>
+      <div class="hint" id="wHint"></div>
+    </div>
+    <div class="fg">
+      <label class="l" for="noteIn">Де спіймав (необов'язково)</label>
+      <input class="inp" id="noteIn" maxlength="50" placeholder="Напр. Key Lento, з човна">
+    </div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn ghost" id="cancelBtn">Скасувати</button>
+      <button class="btn pri" id="saveBtn">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(function(){
+'use strict';
+/* ---------- species ---------- */
+const TOTAL_SPECIES = 35; // per in-game fishing log (Leonipedia, MeowDB)
+const BASE = [
+  ['Stoplight Parrotfish','Риба-папуга'],
+  ['Atlantic Spanish Mackerel','Іспанська макрель'],
+  ['Great Barracuda','Велика барракуда'],
+  ['Greater Amberjack','Велика сериола'],
+  ['Mahi-Mahi','Корифена (дорадо)'],
+  ['Yellowfin Tuna','Жовтоперий тунець'],
+  ['Atlantic Tarpon','Атлантичний тарпон'],
+  ['Candy Fish','Кенді-фіш'],
+  ['Yellowtail Snapper','Жовтохвостий луціан',true],
+  ['Blackfin Tuna','Чорноперий тунець',true]
+];
+const UA = Object.fromEntries(BASE.map(b=>[b[0],b[1]]));
+const UNSURE = new Set(BASE.filter(b=>b[2]).map(b=>b[0]));
+
+/* ---------- state ---------- */
+const LS='fishduel.v1';
+const ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const rid=n=>{let s='';const a=new Uint32Array(n);crypto.getRandomValues(a);for(const x of a)s+=ABC[x%ABC.length];return s};
+let S={};
+try{S=JSON.parse(localStorage.getItem(LS))||{}}catch(e){S={}}
+S.pid=S.pid||rid(12); S.catches=S.catches||{}; S.deleted=S.deleted||{}; S.names=S.names||{};
+let period=S.period||'today';
+function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=oz=>{const l=Math.floor(oz/16),o=oz%16;return o?`${l} lb ${o} oz`:`${l} lb`};
+const kg=oz=>(oz*0.0283495).toFixed(2).replace('.',',')+' кг';
+const nm=pid=>S.names[pid]||'Гравець';
+const ini=s=>(s.trim()[0]||'?').toUpperCase();
+
+/* ---------- networking (PeerJS / WebRTC) ---------- */
+const PFX='fishduel-v1-';
+let peer=null,conns=[],isHost=false,gen=0,retryT=null,net='off';
+function setNet(s){net=s;renderStatus()}
+function cleanup(){clearTimeout(retryT);gen++;conns.forEach(c=>{try{c.close()}catch(e){}});conns=[];if(peer){try{peer.destroy()}catch(e){}peer=null}}
+function retry(){const g=gen;setNet('connecting');clearTimeout(retryT);retryT=setTimeout(()=>{if(g===gen)join()},2500+Math.random()*1500)}
+function join(){
+  cleanup(); if(!S.room)return;
+  if(typeof Peer==='undefined'){setNet('off');return}
+  const g=gen; setNet('connecting');
+  const p=new Peer(PFX+S.room,{debug:0}); peer=p;
+  p.on('open',()=>{if(g!==gen)return;isHost=true;setNet(conns.length?'online':'waiting')});
+  p.on('connection',c=>{if(g===gen)wire(c,g)});
+  p.on('disconnected',()=>{if(g===gen&&!p.destroyed){try{p.reconnect()}catch(e){}}});
+  p.on('error',e=>{if(g!==gen)return;
+    if(e.type==='unavailable-id'){try{p.destroy()}catch(_){}guest(g)}
+    else if(e.type!=='peer-unavailable')retry()});
+}
+function guest(g){
+  isHost=false; const p=new Peer({debug:0}); peer=p;
+  p.on('open',()=>{if(g!==gen)return;wire(p.connect(PFX+S.room,{reliable:true}),g)});
+  p.on('error',()=>{if(g===gen)retry()});
+}
+function wire(c,g){
+  c.on('open',()=>{if(g!==gen)return;conns.push(c);c.send(hello());setNet('online')});
+  c.on('data',d=>{if(g===gen)onData(d,c)});
+  c.on('close',()=>{if(g!==gen)return;conns=conns.filter(x=>x!==c);
+    if(!conns.length){if(isHost)setNet('waiting');else retry()}});
+  c.on('error',()=>{});
+}
+function hello(){return{t:'hello',names:S.names,catches:Object.values(S.catches),deleted:Object.keys(S.deleted)}}
+function send(m,except){conns.forEach(c=>{if(c!==except&&c.open){try{c.send(m)}catch(e){}}})}
+function okCatch(c){return c&&typeof c.id==='string'&&c.id.length<40&&typeof c.pid==='string'&&c.pid.length<40&&typeof c.sp==='string'&&c.sp.trim()&&c.sp.length<=40&&Number.isInteger(c.oz)&&c.oz>0&&c.oz<16000&&typeof c.ts==='number'&&(c.note==null||(typeof c.note==='string'&&c.note.length<=50))}
+function onData(d,from){
+  if(!d||typeof d!=='object')return;
+  let ch=false;
+  if(d.t==='hello'){
+    if(d.names&&typeof d.names==='object')for(const[k,v]of Object.entries(d.names)){if(k!==S.pid&&typeof v==='string'&&v.length<=18&&S.names[k]!==v){S.names[k]=v;ch=true}}
+    if(Array.isArray(d.deleted))for(const id of d.deleted){if(typeof id==='string'&&!S.deleted[id]){S.deleted[id]=1;delete S.catches[id];ch=true}}
+    if(Array.isArray(d.catches))for(const c of d.catches){if(okCatch(c)&&!S.deleted[c.id]&&!S.catches[c.id]){S.catches[c.id]=clean(c);ch=true}}
+    if(ch&&isHost)send(hello(),from);
+  }else if(d.t==='add'&&okCatch(d.c)&&!S.deleted[d.c.id]&&!S.catches[d.c.id]){
+    const msg=recordMsg(d.c); S.catches[d.c.id]=clean(d.c); ch=true;
+    if(isHost)send(d,from);
+    toast(`${nm(d.c.pid)}: ${d.c.sp}, ${fmt(d.c.oz)}${msg?' · '+msg.t:''}`,msg&&msg.gold);
+  }else if(d.t==='del'&&typeof d.id==='string'&&!S.deleted[d.id]){
+    S.deleted[d.id]=1;delete S.catches[d.id];ch=true;if(isHost)send(d,from);
+  }
+  if(ch){save();render()}
+}
+function clean(c){return{id:c.id,pid:c.pid,sp:c.sp.trim(),oz:c.oz,ts:c.ts,note:c.note?String(c.note).trim():''}}
+
+/* ---------- stats ---------- */
+function since(){const n=new Date();if(period==='today'){n.setHours(0,0,0,0);return+n}if(period==='week')return Date.now()-7*864e5;return 0}
+function all(){return Object.values(S.catches).filter(c=>!S.deleted[c.id])}
+function players(){
+  const ids=new Set([S.pid,...Object.keys(S.names),...all().map(c=>c.pid)]);
+  const arr=[...ids]; return [S.pid,...arr.filter(x=>x!==S.pid)];
+}
+function stats(list){
+  const P={};
+  for(const pid of players())P[pid]={pid,count:0,total:0,best:null,sp:{}};
+  for(const c of list){const p=P[c.pid];if(!p)continue;p.count++;p.total+=c.oz;
+    if(!p.best||c.oz>p.best.oz)p.best=c; if(!p.sp[c.sp]||c.oz>p.sp[c.sp].oz)p.sp[c.sp]=c}
+  return P;
+}
+function recordMsg(c){
+  const L=all(); const roomBest=L.reduce((m,x)=>Math.max(m,x.oz),0);
+  if(L.length&&c.oz>roomBest)return{t:'🏆 Рекорд кімнати!',gold:true};
+  const own=L.filter(x=>x.pid===c.pid&&x.sp===c.sp);
+  if(!own.length)return{t:'🆕 Новий вид!'};
+  if(c.oz>Math.max(...own.map(x=>x.oz)))return{t:'⭐ Особистий рекорд'};
+  return null;
+}
+function opponent(P){
+  const others=players().slice(1).map(id=>P[id]);
+  if(!others.length)return null;
+  return others.sort((a,b)=>(b.best?b.best.oz:0)-(a.best?a.best.oz:0)||b.count-a.count)[0];
+}
+
+/* ---------- render ---------- */
+const STXT={online:'онлайн',waiting:'чекаємо друга',connecting:'підключення',off:'офлайн'};
+function renderStatus(){$('#dot').className='dot '+net;$('#stTxt').textContent=STXT[net];$('#codeTxt').textContent=S.room||''}
+function plCard(p,cls,lead){
+  if(!p){
+    return `<div class="pl op empty"><div class="who"><span>Друг</span></div><div class="big">—</div><div class="sp">ще не підключився</div>
+      <div class="waitbox">Надішли йому код <b class="disp" style="color:var(--text);letter-spacing:.12em">${esc(S.room)}</b> або посилання.<button class="btn ghost sm" data-share>Поділитися</button></div></div>`;
+  }
+  const b=p.best;
+  return `<div class="pl ${cls}${lead?' lead':''}">${lead?'<div class="crown">👑</div>':''}
+    <div class="who"><span>${esc(nm(p.pid))}</span>${cls==='me'?'<i class="tag">ти</i>':''}</div>
+    <div class="big">${b?Math.floor(b.oz/16)+'<small>lb</small>'+(b.oz%16?' '+(b.oz%16)+'<small>oz</small>':''):'0<small>lb</small>'}</div>
+    <div class="sp">${b?esc(b.sp):'ще без улову'}</div>
+    <div class="mini"><div><b>${p.count}</b>риб</div><div><b>${Object.keys(p.sp).length}</b>видів</div><div><b>${fmt(p.total)}</b>разом</div></div></div>`;
+}
+function render(){
+  const has=!!S.room;
+  $('#setup').classList.toggle('hidden',has);
+  $('#main').classList.toggle('hidden',!has);
+  $('#addBtn').classList.toggle('hidden',!has);
+  $('#roomChip').classList.toggle('hidden',!has);
+  renderStatus();
+  if(!has)return;
+  const from=since(); const L=all().filter(c=>c.ts>=from);
+  const P=stats(L); const me=P[S.pid]; const op=opponent(P);
+  const mo=me.best?me.best.oz:0, oo=op&&op.best?op.best.oz:0;
+  const meLead=mo>oo, opLead=op&&oo>mo;
+  $('#duel').innerHTML=plCard(me,'me',meLead)+'<div class="vs">VS</div>'+plCard(op,'op',opLead);
+  let v='';
+  if(op){
+    if(!mo&&!oo)v='Хто перший закине вудку?';
+    else if(mo===oo)v='Нічия! Риби однакові до унції';
+    else v=meLead?`Ти попереду на <b>${fmt(mo-oo)}</b>`:`${esc(nm(op.pid))} попереду на <b>${fmt(oo-mo)}</b>`;
+  }
+  $('#verdict').innerHTML=v;
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===period));
+  const PL={today:'за сьогодні',week:'за 7 днів',all:'за весь час'}[period];
+  $('#lbSub').textContent=PL;
+
+  /* leaderboard */
+  const ps=players().map(id=>P[id]);
+  const spWins={}; ps.forEach(p=>spWins[p.pid]=0);
+  const spNames=[...new Set(L.map(c=>c.sp))];
+  for(const sp of spNames){let best=null,tie=false;for(const p of ps){const c=p.sp[sp];if(!c)continue;if(!best||c.oz>best.oz){best=c;tie=false}else if(c.oz===best.oz)tie=true}if(best&&!tie)spWins[best.pid]++}
+  const rows=[
+    ['Найважча риба',p=>p.best?p.best.oz:0,p=>p.best?fmt(p.best.oz):'—'],
+    ['Загальна вага',p=>p.total,p=>p.total?fmt(p.total):'—'],
+    ['Кількість риб',p=>p.count,p=>p.count],
+    ['Різних видів',p=>Object.keys(p.sp).length,p=>Object.keys(p.sp).length],
+    ['Рекордів за видами',p=>spWins[p.pid],p=>spWins[p.pid]],
+    ['Середня вага',p=>p.count?p.total/p.count:0,p=>p.count?fmt(Math.round(p.total/p.count)):'—']
+  ];
+  let h='<table><thead><tr><th></th>'+ps.map(p=>`<th title="${esc(nm(p.pid))}">${esc(nm(p.pid))}${p.pid===S.pid?' (ти)':''}</th>`).join('')+(ps.length<2?'<th>Друг</th>':'')+'</tr></thead><tbody>';
+  for(const[label,val,show]of rows){
+    const vals=ps.map(val);const mx=Math.max(...vals);const win=mx>0&&vals.filter(x=>x===mx).length===1;
+    h+=`<tr><td>${label}</td>`+ps.map((p,i)=>`<td class="${win&&vals[i]===mx?'win':''}">${show(p)}</td>`).join('')+(ps.length<2?'<td class="muted">—</td>':'')+'</tr>';
+  }
+  $('#lb').innerHTML=h+'</tbody></table>';
+
+  /* species records */
+  const opp=op?op.pid:null;
+  const spSorted=spNames.map(sp=>{const m=me.sp[sp],o=opp?P[opp].sp[sp]:null;return{sp,m,o,max:Math.max(m?m.oz:0,o?o.oz:0)}}).sort((a,b)=>b.max-a.max);
+  $('#spl').innerHTML=spSorted.length?spSorted.map(r=>{
+    const mw=r.m&&(!r.o||r.m.oz>r.o.oz), ow=r.o&&(!r.m||r.o.oz>r.m.oz);
+    return `<div class="spr"><div class="n"><b>${esc(r.sp)}</b><span>${esc(UA[r.sp]||'свій вид')}</span></div>
+      <div class="w${mw?' win':''}"><i>${esc(nm(S.pid))}</i>${r.m?fmt(r.m.oz):'—'}</div>
+      <div class="w${ow?' win':''}"><i>${opp?esc(nm(opp)):'Друг'}</i>${r.o?fmt(r.o.oz):'—'}</div></div>`}).join('')
+    :`<div class="empty-note">Тут з'являться найважчі риби кожного виду ${PL}.</div>`;
+
+  /* feed */
+  const sorted=[...L].sort((a,b)=>b.ts-a.ts);
+  $('#feedSub').textContent=sorted.length?`${sorted.length} ${plural(sorted.length,'риба','риби','риб')} ${PL}`:'';
+  const badges=computeBadges();
+  $('#feed').innerHTML=sorted.length?sorted.slice(0,60).map(c=>{
+    const mine=c.pid===S.pid, b=badges[c.id];
+    const t=new Date(c.ts); const tm=t.toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'});
+    const dt=period==='today'?tm:t.toLocaleDateString('uk-UA',{day:'numeric',month:'short'})+', '+tm;
+    return `<div class="it"><div class="av ${mine?'me':'op'}">${esc(ini(nm(c.pid)))}</div>
+      <div class="m"><b>${esc(c.sp)}${b==='rr'?'<i class="badge rr">рекорд</i>':b==='pr'?'<i class="badge pr">особистий</i>':''}</b>
+      <span>${esc(nm(c.pid))} · ${dt}${c.note?' · '+esc(c.note):''}</span></div>
+      <div class="wt">${fmt(c.oz)}<small>${kg(c.oz)}</small></div>
+      ${mine?`<button class="del" data-del="${esc(c.id)}" title="Видалити" aria-label="Видалити">✕</button>`:''}</div>`}).join('')
+    :`<div class="empty-note">Улову ${PL} ще немає. Час закидати вудку 🎣</div>`;
+
+  /* collection (all time) */
+  const A=all(); const mine=new Set(A.filter(c=>c.pid===S.pid).map(c=>c.sp)); const theirs=new Set(A.filter(c=>c.pid!==S.pid).map(c=>c.sp));
+  const known=[...new Set([...BASE.map(b=>b[0]),...A.map(c=>c.sp)])];
+  const got=new Set([...mine,...theirs]);
+  $('#colSub').textContent=`${got.size} / ${TOTAL_SPECIES} видів разом`;
+  $('#col').innerHTML=`<div style="display:flex;justify-content:space-between;font-size:13px"><span class="muted">Спіймано хоч одним із вас</span><b>${Math.round(got.size/TOTAL_SPECIES*100)}%</b></div>
+    <div class="bar"><i style="width:${Math.min(100,got.size/TOTAL_SPECIES*100)}%"></i></div>
+    <div class="chips">${known.map(s=>`<span class="chip${got.has(s)?' got':''}${mine.has(s)&&theirs.has(s)?' both':''}" title="${mine.has(s)&&theirs.has(s)?'Обидва':mine.has(s)?'Ти':theirs.has(s)?'Друг':'Ще ніхто'}">${esc(s)}${UNSURE.has(s)?' ?':''}</span>`).join('')}
+    ${Array.from({length:Math.max(0,TOTAL_SPECIES-known.length)}).map(()=>'<span class="chip">???</span>').join('')}</div>`;
+}
+function computeBadges(){
+  const L=all().sort((a,b)=>a.ts-b.ts); const out={}; let room=0; const per={};
+  for(const c of L){const k=c.pid+'|'+c.sp;
+    if(c.oz>room&&room>0)out[c.id]='rr'; else if(per[k]&&c.oz>per[k])out[c.id]='pr';
+    room=Math.max(room,c.oz); per[k]=Math.max(per[k]||0,c.oz)}
+  return out;
+}
+function plural(n,a,b,c){const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<12||h>14))return b;return c}
+
+/* ---------- toast & burst ---------- */
+let tT;
+function toast(t,gold){const el=$('#toast');el.textContent=t;el.className='toast show'+(gold?' gold':'');clearTimeout(tT);tT=setTimeout(()=>el.className='toast',3200);if(gold)burst()}
+function burst(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const x=innerWidth/2,y=innerHeight*0.35;
+  for(let i=0;i<16;i++){const s=document.createElement('div');s.className='burst';s.textContent=['🐟','🐠','✨','🏆','🎣'][i%5];
+    s.style.left=x+'px';s.style.top=y+'px';const a=Math.random()*Math.PI*2,d=120+Math.random()*160;
+    s.style.setProperty('--x',Math.cos(a)*d+'px');s.style.setProperty('--y',Math.sin(a)*d+120+'px');s.style.setProperty('--r',(Math.random()*360-180)+'deg');
+    document.body.appendChild(s);setTimeout(()=>s.remove(),1500)}
+}
+
+/* ---------- add catch sheet ---------- */
+let pick=null;
+function speciesList(){
+  const used={}; all().forEach(c=>used[c.sp]=(used[c.sp]||0)+1);
+  const names=[...new Set([...BASE.map(b=>b[0]),...Object.keys(used)])];
+  return names.sort((a,b)=>(used[b]||0)-(used[a]||0)||(UNSURE.has(a)-UNSURE.has(b))||a.localeCompare(b));
+}
+function renderGrid(){
+  const q=$('#spSearch').value.trim().toLowerCase();
+  const L=speciesList().filter(s=>!q||s.toLowerCase().includes(q)||(UA[s]||'').toLowerCase().includes(q));
+  $('#sgrid').innerHTML=L.map(s=>`<button class="sopt${pick===s?' on':''}" data-sp="${esc(s)}">${esc(s)}${UNSURE.has(s)?' ?':''}<span>${esc(UA[s]||'додано вами')}</span></button>`).join('')
+    +`<button class="sopt new${pick==='__new'?' on':''}" data-sp="__new">＋ Інший вид<span>якого немає в списку</span></button>`;
+}
+function openSheet(){
+  pick=null;$('#spSearch').value='';$('#spCustom').value='';$('#spCustom').classList.add('hidden');
+  $('#lbIn').value='';$('#ozIn').value='';$('#noteIn').value='';$('#wHint').textContent='';$('#wHint').className='hint';
+  renderGrid();$('#ov').classList.add('open');document.body.style.overflow='hidden';
+}
+function closeSheet(){$('#ov').classList.remove('open');document.body.style.overflow=''}
+function weightHint(){
+  const l=parseInt($('#lbIn').value||'0',10),o=parseInt($('#ozIn').value||'0',10);const h=$('#wHint');
+  if(o>15){h.textContent='В 1 lb лише 16 oz, тож oz від 0 до 15';h.className='hint err';return}
+  const oz=(isNaN(l)?0:l)*16+(isNaN(o)?0:o);
+  if(!oz){h.textContent='';h.className='hint';return}
+  h.className='hint';const P=stats(all());const myb=pick&&pick!=='__new'&&P[S.pid].sp[pick];
+  h.textContent=`= ${kg(oz)}`+(myb?` · твій рекорд ${fmt(myb.oz)}`:'');
+}
+function saveCatch(){
+  let sp=pick==='__new'?$('#spCustom').value.trim().replace(/\s+/g,' '):pick;
+  const h=$('#wHint');
+  if(!sp){h.textContent=pick==='__new'?'Впиши назву виду':'Обери вид риби';h.className='hint err';return}
+  const known=speciesList().find(s=>s.toLowerCase()===sp.toLowerCase()); if(known)sp=known;
+  const l=parseInt($('#lbIn').value||'0',10),o=parseInt($('#ozIn').value||'0',10);
+  if(isNaN(l)||isNaN(o)||l<0||o<0||o>15||l>999){h.textContent='Перевір вагу: lb від 0 до 999, oz від 0 до 15';h.className='hint err';return}
+  const oz=l*16+o; if(!oz){h.textContent='Вкажи вагу';h.className='hint err';return}
+  const c={id:rid(14),pid:S.pid,sp,oz,ts:Date.now(),note:$('#noteIn').value.trim().slice(0,50)};
+  const msg=recordMsg(c); S.catches[c.id]=c; save(); send({t:'add',c}); closeSheet(); render();
+  toast(msg?msg.t+` ${fmt(oz)}`:`Записано: ${sp}, ${fmt(oz)}`,msg&&msg.gold);
+}
+
+/* ---------- share ---------- */
+function link(){return location.origin+location.pathname+'#'+S.room}
+async function share(){
+  const url=link();
+  try{if(navigator.share){await navigator.share({title:'Fish Duel',text:`Рибальська дуель у GTA VI! Код кімнати: ${S.room}`,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(url);toast('Посилання скопійовано')}catch(e){prompt('Скопіюй посилання:',url)}
+}
+
+/* ---------- events ---------- */
+function setName(){const n=$('#nameIn').value.trim().slice(0,18);if(!n){$('#setupErr').textContent="Спочатку впиши ім'я";$('#nameIn').focus();return false}S.names[S.pid]=n;return true}
+$('#createBtn').onclick=()=>{if(!setName())return;S.room=rid(5);save();history.replaceState(null,'','#'+S.room);render();join()};
+$('#joinBtn').onclick=()=>{if(!setName())return;const c=$('#codeIn').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(c.length!==5){$('#setupErr').textContent='Код має 5 символів';return}S.room=c;save();history.replaceState(null,'','#'+c);render();join()};
+$('#codeIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#joinBtn').click()});
+$('#roomChip').onclick=share;
+document.addEventListener('click',e=>{
+  const sh=e.target.closest('[data-share]');if(sh){share();return}
+  const d=e.target.closest('[data-del]');if(d){const id=d.dataset.del;const c=S.catches[id];if(c&&c.pid===S.pid&&confirm(`Видалити ${c.sp} (${fmt(c.oz)})?`)){S.deleted[id]=1;delete S.catches[id];save();send({t:'del',id});render()}return}
+  const t=e.target.closest('#tabs button');if(t){period=t.dataset.p;S.period=period;save();render();return}
+  const so=e.target.closest('.sopt');if(so){pick=so.dataset.sp;$('#spCustom').classList.toggle('hidden',pick!=='__new');if(pick==='__new')$('#spCustom').focus();renderGrid();weightHint()}
+});
+$('#spSearch').addEventListener('input',renderGrid);
+$('#lbIn').addEventListener('input',weightHint);$('#ozIn').addEventListener('input',weightHint);
+$('#addBtn').onclick=openSheet;$('#cancelBtn').onclick=closeSheet;$('#saveBtn').onclick=saveCatch;
+$('#ov').addEventListener('click',e=>{if(e.target.id==='ov')closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+$('#renameBtn').onclick=()=>{const n=prompt("Нове ім'я:",nm(S.pid));if(n&&n.trim()){S.names[S.pid]=n.trim().slice(0,18);save();send(hello());render()}};
+$('#leaveBtn').onclick=()=>{if(!confirm('Вийти з кімнати? Улов залишиться на цьому пристрої.'))return;cleanup();S.room=null;save();history.replaceState(null,'',location.pathname);setNet('off');render()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.room&&net!=='online'&&net!=='waiting')join()});
+
+/* ---------- boot ---------- */
+const hash=(location.hash||'').slice(1).toUpperCase().replace(/[^A-Z0-9]/g,'');
+if(S.names[S.pid])$('#nameIn').value=S.names[S.pid];
+if(hash.length===5&&hash!==S.room){
+  if(S.room){cleanup();S.room=null}
+  $('#codeIn').value=hash;
+}
+render();
+if(S.room)join();
+let day=new Date().toDateString();
+setInterval(()=>{const d=new Date().toDateString();if(d!==day){day=d;render()}},60000);
+})();
+</script>
+</body>
+</html>
