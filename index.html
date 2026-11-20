@@ -418,26 +418,55 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <script>
 (function(){
 'use strict';
-/* ---------- Species confirmed in the released game (Nov 2026). The fishing log has 35. ---------- */
-const TOTAL=35;
+/* ---------- All 35 species from the in-game fishing log (names as the game spells them) ---------- */
 const BASE=[
-  ['Stoplight Parrotfish','Рыба-попугай'],
-  ['Atlantic Spanish Mackerel','Атлантическая испанская макрель'],
-  ['Great Barracuda','Большая барракуда'],
-  ['Greater Amberjack','Большая сериола'],
-  ['Mahi-Mahi','Корифена (махи-махи)'],
-  ['Yellowfin Tuna','Желтопёрый тунец'],
+  ['American Eel','Американский угорь'],
+  ['Atlantic Spadefish','Атлантический лопатник'],
+  ['Atlantic Spanish Mackerel','Испанская макрель'],
   ['Atlantic Tarpon','Атлантический тарпон'],
-  ['Candy Fish','Название из игры']
+  ['Thread Herring','Нитепёрая сельдь'],
+  ['Bluegill','Синежаберный солнечник'],
+  ['Candy Fish','Вид из игры'],
+  ['Channel Catfish','Канальный сомик'],
+  ['Lake Chubsucker','Озёрный чукучан'],
+  ['Greater Amberjack','Большая сериола'],
+  ['Great Barracuda','Большая барракуда'],
+  ['Largemouth Bass','Большеротый окунь'],
+  ['Rock Sea Bass','Скальный морской окунь'],
+  ['Striped Bass','Полосатый лаврак'],
+  ['Cobia','Кобия'],
+  ['Black Drum','Чёрный горбыль'],
+  ['Green Moray Eel','Зелёная мурена'],
+  ['Spotted Moray Eel','Пятнистая мурена'],
+  ['Leonida Gar','Панцирник Леониды'],
+  ['Black Grouper','Чёрный групер'],
+  ['Tiger Grouper','Тигровый групер'],
+  ['Bluestriped Grunt','Синеполосый хрюкун'],
+  ['Hogfish','Свиной губан'],
+  ['Red Lionfish','Красная крылатка'],
+  ['Mahi Mahi','Корифена (махи-махи)'],
+  ['Stoplight Parrotfish','Рыба-попугай'],
+  ['Permit','Пермит'],
+  ['Redfin Pickerel','Краснопёрая щука'],
+  ['Littlehead Porgy','Малоголовый морской карась'],
+  ['Salt Fish','Вид из игры'],
+  ['Northern Red Snapper','Северный красный луциан'],
+  ['Yellowtail Snapper','Желтохвостый луциан'],
+  ['Common Snook','Обыкновенный снук'],
+  ['Redbreast Sunfish','Краснобрюхий солнечник'],
+  ['Yellowfin Tuna','Желтопёрый тунец']
 ];
+const TOTAL=BASE.length;
 const RU=Object.fromEntries(BASE);
+const ALIAS={'mahi-mahi':'Mahi Mahi'};
+const normSp=s=>{s=String(s).trim().replace(/\s+/g,' ');const a=ALIAS[s.toLowerCase()];if(a)return a;const k=BASE.find(b=>b[0].toLowerCase()===s.toLowerCase());return k?k[0]:s};
 
 /* ---------- state ---------- */
 const LS='fishduel.v1',ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const rid=n=>{let s='';const a=new Uint32Array(n);crypto.getRandomValues(a);for(const x of a)s+=ABC[x%ABC.length];return s};
 let S={};try{S=JSON.parse(localStorage.getItem(LS))||{}}catch(e){S={}}
 S.pid=S.pid||rid(12);S.catches=S.catches||{};S.deleted=S.deleted||{};S.names=S.names||{};
-for(const c of Object.values(S.catches)){if(c.g==null&&Number.isInteger(c.oz)){c.g=Math.round(c.oz*28.3495);delete c.oz}}
+for(const c of Object.values(S.catches)){if(c.g==null&&Number.isInteger(c.oz)){c.g=Math.round(c.oz*28.3495);delete c.oz}c.sp=normSp(c.sp)}
 let period=['today','week','all'].includes(S.period)?S.period:'today',view=['board','map','log','species'].includes(S.view)?S.view:'board';
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
 
@@ -487,7 +516,7 @@ function okCatch(c){
   if(c.note!=null&&(typeof c.note!=='string'||c.note.length>50))return false;
   return num01(c.x)&&num01(c.y);
 }
-function clean(c){const o={id:c.id,pid:c.pid,sp:c.sp.trim(),g:c.g!=null?c.g:Math.round(c.oz*28.3495),ts:c.ts,note:c.note?String(c.note).trim():''};if(c.x!=null&&c.y!=null){o.x=c.x;o.y=c.y}return o}
+function clean(c){const o={id:c.id,pid:c.pid,sp:normSp(c.sp),g:c.g!=null?c.g:Math.round(c.oz*28.3495),ts:c.ts,note:c.note?String(c.note).trim():''};if(c.x!=null&&c.y!=null){o.x=c.x;o.y=c.y}return o}
 function onData(d,from){
   if(!d||typeof d!=='object')return;let ch=false;
   if(d.t==='hello'){
@@ -559,7 +588,7 @@ function boardHTML(){
   h+=`<details class="about"><summary>${ic('info')}Как устроена рыбалка в GTA VI</summary><ul>
     <li>После поимки игра показывает <b>вид и вес</b>, а также твой рекорд по этому виду. Сюда переноси эти же цифры. Если игра пишет фунты, в форме есть ввод в lb и oz, он сам переведёт в кг.</li>
     <li>Все рекорды есть в игре: <b>Пауза, Progress, Animals, Fishing</b>. В журнале 35 видов.</li>
-    <li>Публично подтверждены пока 8 видов, они уже в списке. Остальные добавляй сам, когда поймаешь: «Другой вид» при записи, и он появится у вас обоих.</li>
+    <li>В списке все 35 видов из игрового журнала, с названиями как в игре. Найдёшь рыбу, которой нет в списке, добавь её через «Другой вид».</li>
     <li>Первое задание Кэла: <b>Stoplight Parrotfish тяжелее 2 lb (0,91 кг)</b>. Испытание Big Fish: рыба от 20 lb (9,07 кг). Pro Angler: поймать все виды.</li>
     <li>Карта: официальная карта Леониды © Rockstar Games. Источники по рыбалке: <a href="https://leonipedia.com/guides/fishing/" target="_blank" rel="noopener">Leonipedia</a>, <a href="https://outputlag.com/guides/gta-6-fishing-guide/" target="_blank" rel="noopener">Outputlag</a>, <a href="https://www.powerpyx.com/gta-6-all-challenges-guide/" target="_blank" rel="noopener">PowerPyx</a>. Фанатский проект, не связан с Rockstar Games.</li></ul></details>
     <div class="foot"><button id="renameBtn">${ic('edit')}Сменить имя</button><button id="leaveBtn">${ic('out')}Выйти из комнаты</button></div>`;
