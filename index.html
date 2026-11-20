@@ -180,6 +180,21 @@ button.row:active,a.row:active{background:var(--g2)}
 .chip svg{width:14px;height:14px;stroke-width:2.4}
 .chip .av.xs{width:20px;height:20px;font-size:10px;box-shadow:none}
 .as .grp{max-height:62vh;overflow:auto}
+/* all-time tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:14px 14px 15px;border-radius:18px;background:var(--g1);text-align:left}
+.tile.rec{background:linear-gradient(160deg,rgba(255,204,0,.18),var(--g1) 62%)}
+.tile .tl{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--l2)}
+.ico.sm{width:24px;height:24px;border-radius:6px}.ico.sm svg{width:14px;height:14px}
+.tile .bv{margin-top:12px;font-family:var(--round);font-size:30px;font-weight:700;line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tile .bv small{font-size:15px;font-weight:600;color:var(--l2);margin-left:3px}
+.tile .bs{max-width:100%;margin-top:5px;font-size:13px;color:var(--l2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .bw{display:flex;align-items:center;gap:6px;max-width:100%;margin-top:10px;font-size:13px;color:var(--l1)}
+.tile .bw>span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track.sm{width:100%;height:5px;margin-top:12px}
+.split{display:flex;justify-content:space-between;width:100%;margin-top:6px;font-family:var(--round);font-size:13px;font-weight:600}
+.split .me{color:var(--me)}.split .op{color:var(--op)}
+.gh.s small{float:right;font-weight:400;color:var(--l2)}
 /* stat rows */
 .sr .t b{font-size:17px}
 .sr .vals{display:flex;gap:4px}
@@ -599,7 +614,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'Неделя',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='2.2';
+const APPV='2.3';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
@@ -648,6 +663,17 @@ function renderBoard(){
     h+=`<div class="gh">Счёт</div><div class="colhead"><span class="me">Ты</span><span class="op">${op?esc(nm(op.pid)):'—'}</span></div><div class="group">`+
       rows.map(([i,c,l,f,s])=>{const x=f(me),y=f(op);return `<div class="row sr ii">${rowIc(i,c)}<span class="t"><b>${l}</b></span><span class="vals"><span class="me${x>y?' w':''}">${s(x)}</span><span class="op${y>x?' w':''}">${op?s(y):'—'}</span></span></div>`}).join('')+'</div>';
   }else h+=`<div class="empty">${ic('fish')}<h3>Нет улова ${PL[period]}</h3><p>Запиши рыбу, и счёт появится здесь.</p><button class="pbtn" data-add>Записать улов</button></div>`;
+  const A=all();
+  if(A.length){
+    const top=A.reduce((m,c)=>!m||c.g>m.g?c:m,null),tot=A.reduce((x,c)=>x+c.g,0),aP=stats(A),aop=rival(aP),tm=aP[S.pid].total,to=aop?aP[aop.pid].total:0;
+    const recs=Object.values(A.reduce((o,c)=>{if(!o[c.sp]||c.g>o[c.sp].g)o[c.sp]=c;return o},{})).sort((a,b)=>b.g-a.g),shown=S.recAll?recs:recs.slice(0,6);
+    const who=c=>c.pid===S.pid?'Ты':esc(nm(c.pid)),dt=c=>new Date(c.ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+    h+=`<div class="gh">За всё время</div><div class="tiles">
+      <button class="tile rec" data-spd="${esc(top.sp)}"><span class="tl">${rowIc('trophy','gold sm')}Самая тяжёлая</span><span class="bv">${kg(top.g)}<small>кг</small></span><span class="bs">${esc(top.sp)}</span><span class="bw">${avH(top.pid,'xs')}<span>${who(top)}, ${dt(top)}</span></span></button>
+      <div class="tile"><span class="tl">${rowIc('weight','c1 sm')}Общий вес</span><span class="bv">${kg(tot)}<small>кг</small></span><span class="bs">${A.length} ${plural(A.length,'рыба','рыбы','рыб')}</span>
+        ${aop?`<div class="track sm"><i class="me" style="flex-grow:${tm}"></i><i class="op" style="flex-grow:${to}"></i></div><span class="split"><span class="me">${kg(tm)}</span><span class="op">${kg(to)}</span></span>`:''}</div></div>
+      <div class="gh s">Рекорд каждого вида<small>${recs.length} из ${TOTAL}</small></div><div class="group">${shown.map(c=>`<button class="row ii" data-spd="${esc(c.sp)}">${avH(c.pid,'sm')}<span class="t"><b>${esc(c.sp)}</b><em>${who(c)}, ${dt(c)}</em></span><span class="v num" style="color:var(--${c.pid===S.pid?'me':'op'})">${kg(c.g)} кг</span>${ic('chev','chev')}</button>`).join('')}${recs.length>6?`<button class="row tint" data-recall><span class="t"><b>${S.recAll?'Свернуть':`Показать все ${recs.length}`}</b></span></button>`:''}</div>`;
+  }
   if(op){
     const R=dayResults(all(),op.pid).filter(r=>r.me||r.op),wm=R.filter(r=>r.win==='me').length,wo=R.filter(r=>r.win==='op').length;
     if(R.length){
@@ -895,6 +921,7 @@ document.addEventListener('click',e=>{
   const ns=t.closest('[data-newsp]');if(ns){pick=normSp(ns.dataset.newsp).slice(0,40);formState();showPane('form');return}
   const u=t.closest('#unitSeg button');if(u){setUnit(u.dataset.u);return}
   if(t.closest('#meBtn')){openS2('profile');return}
+  if(t.closest('[data-recall]')){S.recAll=!S.recAll;save();renderBoard();return}
   const sd=t.closest('[data-spd]');if(sd){openS2('species',sd.dataset.spd);return}
   const mw=t.closest('[data-mw]');if(mw){S.mapWho=mw.dataset.mw;save();renderMap();return}
   if(t.closest('[data-msp]')){const sps=[...new Set(inPeriod().filter(c=>c.x!=null).map(c=>c.sp))].sort();
