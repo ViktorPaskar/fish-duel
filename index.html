@@ -537,7 +537,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <input type="file" id="bkFile" accept="application/json,.json" class="hidden">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -589,29 +589,55 @@ const avH=(pid,x='')=>{const cls=pid===S.pid?'me':'op',a=S.avatars[pid];return a
 const ini=s=>(s.trim()[0]||'?').toUpperCase();
 const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<12||h>14)?b:c};
 
-/* ---------- networking: PeerJS / WebRTC ---------- */
-const PFX='fishduel-v1-';
-let peer=null,conns=[],isHost=false,gen=0,retryT=null,net='off';
+/* ---------- cloud room (Supabase): the room lives on the server, the phone keeps a copy ---------- */
+const SB_URL='https://dfgujobawwwzfqulgkgs.supabase.co',SB_KEY='sb_publishable_wd1VLLhcrL4h-TtcmZayHA_Npxaar1G';
+let sb=null,chan=null,gen=0,retryT=null,net='off',lastJoin=0;
 function setNet(s){net=s;if(!S.room)return;if(view==='board')renderBoard();if(s2&&s2.kind==='profile')renderProfile()}
-function cleanup(){clearTimeout(retryT);gen++;conns.forEach(c=>{try{c.close()}catch(e){}});conns=[];if(peer){try{peer.destroy()}catch(e){}peer=null}}
-function retry(){const g=gen;setNet('connecting');clearTimeout(retryT);retryT=setTimeout(()=>{if(g===gen)join()},2500+Math.random()*1500)}
-function join(){
-  cleanup();if(!S.room)return;if(typeof Peer==='undefined'){setNet('off');return}
-  const g=gen;setNet('connecting');const p=new Peer(PFX+S.room,{debug:0});peer=p;
-  p.on('open',()=>{if(g!==gen)return;isHost=true;setNet(conns.length?'online':'waiting')});
-  p.on('connection',c=>{if(g===gen)wire(c,g)});
-  p.on('disconnected',()=>{if(g===gen&&!p.destroyed){try{p.reconnect()}catch(e){}}});
-  p.on('error',e=>{if(g!==gen)return;if(e.type==='unavailable-id'){try{p.destroy()}catch(_){}guest(g)}else if(e.type!=='peer-unavailable')retry()});
+function cleanup(){clearTimeout(retryT);gen++;if(chan){const c=chan;chan=null;try{sb.removeChannel(c)}catch(e){}}}
+function retry(){const g=gen;clearTimeout(retryT);retryT=setTimeout(()=>{if(g===gen)join()},6000)}
+const rpc=async(f,a)=>{const{data,error}=await sb.rpc(f,a);if(error)throw error;return data};
+const meName=()=>S.names[S.pid]||null,meAv=()=>S.avatars[S.pid]||null;
+async function join(create=true){
+  cleanup();if(!S.room)return;if(typeof supabase==='undefined'){setNet('off');return}
+  sb=sb||supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+  const g=gen,room=S.room;lastJoin=Date.now();if(net!=='online')setNet('connecting');
+  let st;try{st=await rpc('fd_join',{p_room:room,p_pid:S.pid,p_owner:S.owner||'',p_create:create,p_name:meName(),p_avatar:meAv()})}
+  catch(e){if(g===gen){setNet('off');retry()}return}
+  if(g!==gen||S.room!==room)return;
+  if(!st){S.room=null;S.owner=null;save();history.replaceState(null,'',location.pathname);net='off';render();$('#setupErr').textContent='Комната не найдена. Проверь код.';return}
+  if(st.closed){roomClosed(st.owner);return}
+  merge(st);
+  const c=sb.channel('fd-'+room,{config:{broadcast:{self:false},presence:{key:S.pid}}});chan=c;
+  c.on('broadcast',{event:'m'},({payload})=>{if(g===gen)onData(payload)});
+  c.on('presence',{event:'sync'},()=>{if(g===gen)setNet(Object.keys(c.presenceState()).some(k=>k!==S.pid)?'online':'waiting')});
+  c.subscribe(x=>{if(g!==gen)return;if(x==='SUBSCRIBED'){c.track({at:Date.now()});if(net!=='online')setNet('waiting')}else if(x==='CHANNEL_ERROR'||x==='TIMED_OUT'){setNet('connecting');retry()}});
 }
-function guest(g){isHost=false;const p=new Peer({debug:0});peer=p;p.on('open',()=>{if(g!==gen)return;wire(p.connect(PFX+S.room,{reliable:true}),g)});p.on('error',()=>{if(g===gen)retry()})}
-function wire(c,g){
-  c.on('open',()=>{if(g!==gen)return;conns.push(c);c.send(hello());setNet('online')});
-  c.on('data',d=>{if(g===gen)onData(d,c)});
-  c.on('close',()=>{if(g!==gen)return;conns=conns.filter(x=>x!==c);if(!conns.length){if(isHost)setNet('waiting');else retry()}});
-  c.on('error',()=>{});
+/* server is the truth; catches made offline on this phone are uploaded */
+function merge(st){
+  if(st.owner)S.owner=st.owner;
+  const srv={};for(const c of st.catches||[])if(okCatch(c))srv[c.id]=c;
+  for(const id of st.deleted||[]){S.deleted[id]=1;delete S.catches[id]}
+  for(const p of st.players||[]){if(p.pid===S.pid)continue;if(typeof p.name==='string'&&p.name.length<=18)S.names[p.pid]=p.name;if(p.avatar&&avOk(p.avatar))S.avatars[p.pid]=p.avatar;else delete S.avatars[p.pid]}
+  const up=[],del=[];
+  for(const id of Object.keys(srv))if(S.deleted[id]){if(srv[id].pid===S.pid)del.push(id);delete srv[id]}
+  for(const c of Object.values(S.catches)){const x=srv[c.id];if(!x)up.push(c);else if(c.pid===S.pid&&(c.u||0)>(x.u||0))up.push(c)}
+  for(const x of Object.values(srv)){const l=S.catches[x.id];if(!l||(x.u||0)>(l.u||0)||(l.pid!==S.pid&&(x.u||0)>=(l.u||0)))S.catches[x.id]=clean(x)}
+  save();render();
+  for(const c of up)rpc('fd_put',{p_room:S.room,p_c:c}).catch(()=>{});
+  for(const id of del)rpc('fd_del',{p_room:S.room,p_id:id,p_pid:S.pid}).catch(()=>{});
 }
-const hello=()=>({t:'hello',owner:S.owner||null,noav:S.avatars[S.pid]?[]:[S.pid],names:S.names,avatars:S.avatars,catches:Object.values(S.catches),deleted:Object.keys(S.deleted)});
-function send(m,ex){conns.forEach(c=>{if(c!==ex&&c.open){try{c.send(m)}catch(e){}}})}
+function roomClosed(owner){const who=S.names[owner]||'Создатель комнаты';wipeAll();alertBox({title:'Комната закрыта',msg:`${who} закрыл комнату. Весь улов удалён.`,ok:'Понятно',solo:1,f:()=>{}})}
+const hello=()=>({t:'hello',names:{[S.pid]:S.names[S.pid]},avatars:S.avatars[S.pid]?{[S.pid]:S.avatars[S.pid]}:{},noav:S.avatars[S.pid]?[]:[S.pid]});
+/* write to the room, then tell the friend's open app; resolves true when the server took it */
+function send(m){
+  if(!S.room||!sb)return Promise.resolve(false);const room=S.room;let p;
+  if(m.t==='add'||m.t==='upd')p=rpc('fd_put',{p_room:room,p_c:m.c});
+  else if(m.t==='del')p=rpc('fd_del',{p_room:room,p_id:m.id,p_pid:S.pid});
+  else if(m.t==='hello')p=rpc('fd_player',{p_room:room,p_pid:S.pid,p_name:meName(),p_avatar:meAv()});
+  else if(m.t==='wipe')p=rpc('fd_wipe',{p_room:room,p_pid:S.pid});
+  else return Promise.resolve(false);
+  return p.then(r=>{if(r===false)return false;if(chan)try{chan.send({type:'broadcast',event:'m',payload:m})}catch(e){}return true}).catch(()=>false);
+}
 const n01=v=>v==null||(typeof v==='number'&&v>=0&&v<=1);
 function okCatch(c){
   if(!c||typeof c.id!=='string'||c.id.length>=40||typeof c.pid!=='string'||c.pid.length>=40)return false;
@@ -626,22 +652,18 @@ function clean(c){const o={id:c.id,pid:c.pid,sp:normSp(c.sp),g:c.g!=null?c.g:Mat
 function onData(d,from){
   if(!d||typeof d!=='object')return;let ch=false;
   if(d.t==='hello'){
-    if(!S.owner&&typeof d.owner==='string'&&d.owner.length<40){S.owner=d.owner;ch=true}
-    else if(!S.owner&&!d.owner&&isHost){S.owner=S.pid;save();send(hello())}
     if(d.avatars&&typeof d.avatars==='object')for(const[k,v]of Object.entries(d.avatars)){if(k!==S.pid&&avOk(v)&&S.avatars[k]!==v){S.avatars[k]=v;ch=true}}
     if(Array.isArray(d.noav))for(const k of d.noav){if(k!==S.pid&&S.avatars[k]){delete S.avatars[k];ch=true}}
     if(d.names&&typeof d.names==='object')for(const[k,v]of Object.entries(d.names)){if(k!==S.pid&&typeof v==='string'&&v.length<=18&&S.names[k]!==v){S.names[k]=v;ch=true}}
     if(Array.isArray(d.deleted))for(const id of d.deleted){if(typeof id==='string'&&!S.deleted[id]){S.deleted[id]=1;delete S.catches[id];ch=true}}
     if(Array.isArray(d.catches))for(const c of d.catches){if(!okCatch(c)||S.deleted[c.id])continue;const ex=S.catches[c.id];if(!ex||(ex.pid===c.pid&&(c.u||0)>(ex.u||0))){S.catches[c.id]=clean(c);ch=true}}
-    if(ch&&isHost)send(hello(),from);
   }else if(d.t==='add'&&okCatch(d.c)&&!S.deleted[d.c.id]&&!S.catches[d.c.id]){
-    const c=clean(d.c),r=recordOf(c);S.catches[c.id]=c;ch=true;if(isHost)send(d,from);
+    const c=clean(d.c),r=recordOf(c);S.catches[c.id]=c;ch=true;
     toast(`${nm(c.pid)}: ${c.sp}, ${kgT(c.g)}`,r==='rec',c.pid);
   }else if(d.t==='upd'&&okCatch(d.c)&&S.catches[d.c.id]&&S.catches[d.c.id].pid===d.c.pid&&(d.c.u||0)>(S.catches[d.c.id].u||0)){
-    S.catches[d.c.id]=clean(d.c);ch=true;if(isHost)send(d,from);
-  }else if(d.t==='wipe'&&d.room===S.room&&S.owner&&d.pid===S.owner&&d.pid!==S.pid){
-    if(isHost)send(d,from);const who=nm(d.pid);setTimeout(()=>{wipeAll();alertBox({title:'Комната закрыта',msg:`${who} закрыл комнату. Весь улов удалён.`,ok:'Понятно',solo:1,f:()=>{}})},300);return
-  }else if(d.t==='del'&&typeof d.id==='string'&&!S.deleted[d.id]){S.deleted[d.id]=1;delete S.catches[d.id];ch=true;if(isHost)send(d,from)}
+    S.catches[d.c.id]=clean(d.c);ch=true;
+  }else if(d.t==='wipe'&&d.room===S.room&&S.owner&&d.pid===S.owner&&d.pid!==S.pid){roomClosed(d.pid);return
+  }else if(d.t==='del'&&typeof d.id==='string'&&!S.deleted[d.id]){S.deleted[d.id]=1;delete S.catches[d.id];ch=true}
   if(ch){save();render()}
 }
 
@@ -664,7 +686,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'7 дней',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='2.6';
+const APPV='3.0';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
@@ -873,7 +895,7 @@ function renderProfile(){
       <div class="row ii">${rowIc('list','c4')}<span class="t"><b>Записей</b></span><span class="v num">${all().length}</span></div>
       <button class="row ii" data-export>${rowIc('save',backupDue()?'red':'c3')}<span class="t"><b>Сохранить копию</b><em>${d===null?'Копии ещё нет':`Последняя ${d===0?'сегодня':`${d} ${plural(d,'день','дня','дней')} назад`}`}</em></span>${backupDue()?'<i class="rdot"></i>':''}</button>
       <button class="row ii" id="importBtn">${rowIc('restore','gray')}<span class="t"><b>Восстановить из файла</b></span></button></div>
-    <p class="gf">История хранится на обоих телефонах и восстанавливается от друга при подключении.</p>
+    <p class="gf">Улов хранится в комнате в облаке и копией на телефоне. Без интернета запись отправится, когда связь появится.</p>
     <div class="group" style="margin-top:24px"><button class="row red" id="leaveBtn"><span class="t"><b>${S.owner===S.pid?'Закрыть комнату':'Выйти из комнаты'}</b></span></button></div>
     ${S.owner===S.pid?'<p class="gf">Ты создал комнату. Если закроешь её, весь улов удалится у обоих.</p>':''}
     <p class="gf">Карта © Rockstar Games. Неофициальный фан-проект. Версия ${APPV}.</p>`;
@@ -1031,9 +1053,9 @@ async function share(){
 
 /* ---------- events ---------- */
 function setName(){const n=$('#nameIn').value.trim().slice(0,18);if(!n){$('#setupErr').textContent='Введи имя.';$('#nameIn').focus();return false}S.names[S.pid]=n;return true}
-function enter(code){S.room=code;save();history.replaceState(null,'','#'+code);render();join()}
-$('#createBtn').onclick=()=>{if(setName()){S.owner=S.pid;enter(rid(5))}};
-$('#joinBtn').onclick=()=>{if(!setName())return;const c=$('#codeIn').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length!==5){$('#setupErr').textContent='В коде 5 символов.';$('#codeIn').focus();return}S.owner=null;enter(c)};
+function enter(code,create){S.room=code;save();history.replaceState(null,'','#'+code);render();join(create)}
+$('#createBtn').onclick=()=>{if(setName()){S.owner=S.pid;enter(rid(5),true)}};
+$('#joinBtn').onclick=()=>{if(!setName())return;const c=$('#codeIn').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length!==5){$('#setupErr').textContent='В коде 5 символов.';$('#codeIn').focus();return}S.owner=null;enter(c,false)};
 $('#codeIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#joinBtn').click()}});
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();($('#codeIn').value?$('#joinBtn'):$('#createBtn')).click()}});
 document.addEventListener('click',e=>{
@@ -1049,8 +1071,8 @@ document.addEventListener('click',e=>{
     if(c.pid===S.pid){acts.push({t:'Изменить',f:()=>openSheet(null,c.id)});acts.push({t:'Удалить запись',red:1,f:()=>{S.deleted[c.id]=1;delete S.catches[c.id];save();send({t:'del',id:c.id});render()}})}actionSheet(c.sp,kgT(c.g)+(c.pid===S.pid?'':`, ${nm(c.pid)}`),acts);return}
   if(t.closest('#renameBtn')){alertBox({title:'Твоё имя',msg:'Его увидит соперник.',input:nm(S.pid),max:18,ok:'Сохранить',f:v=>{v=(v||'').trim().slice(0,18);if(v){S.names[S.pid]=v;save();send(hello());render()}}});return}
   if(t.closest('#leaveBtn')){
-    if(S.owner===S.pid){actionSheet('Закрыть комнату?','Ты создатель комнаты. Весь улов удалится у тебя и у друга. Отменить нельзя.',[{t:'Закрыть и удалить всё',red:1,f:()=>{send({t:'wipe',room:S.room,pid:S.pid});setTimeout(()=>{wipeAll();toast('Комната закрыта, улов удалён')},400)}}]);return}
-    actionSheet('Выйти из комнаты?','Улов останется на этом устройстве.',[{t:'Выйти',red:1,f:()=>{closeS2();cleanup();S.room=null;S.owner=null;save();history.replaceState(null,'',location.pathname);net='off';render()}}]);return}
+    if(S.owner===S.pid){actionSheet('Закрыть комнату?','Ты создатель комнаты. Весь улов удалится у тебя и у друга. Отменить нельзя.',[{t:'Закрыть и удалить всё',red:1,f:()=>{send({t:'wipe',room:S.room,pid:S.pid}).then(ok=>{if(ok){wipeAll();toast('Комната закрыта, улов удалён')}else toast('Нет связи. Комната не закрыта.')})}}]);return}
+    actionSheet('Выйти из комнаты?','Улов останется в комнате, вернуться можно по коду.',[{t:'Выйти',red:1,f:()=>{closeS2();cleanup();S.room=null;S.owner=null;save();history.replaceState(null,'',location.pathname);net='off';render()}}]);return}
   const sp=t.closest('[data-sp]');if(sp){pick=sp.dataset.sp;formState();showPane('form');setTimeout(()=>{const i=unit==='kg'?$('#kgIn'):$('#lbIn');if(!readG())i.focus()},380);return}
   const ns=t.closest('[data-newsp]');if(ns){pick=normSp(ns.dataset.newsp).slice(0,40);formState();showPane('form');return}
   const u=t.closest('#unitSeg button');if(u){setUnit(u.dataset.u);return}
@@ -1072,7 +1094,8 @@ $('#spSearch').addEventListener('input',renderSpList);
 ['#kgIn','#lbIn','#ozIn'].forEach(s=>$(s).addEventListener('input',formState));
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#picker').classList.contains('open'))closePicker();else if($('#sheet').classList.contains('open'))closeSheet();else if(s2)closeS2()});
 addEventListener('scroll',()=>{if(view!=='map')$('#nb').classList.toggle('solid',scrollY>36)},{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.room&&net!=='online'&&net!=='waiting')join()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.room&&Date.now()-lastJoin>3000)join()});
+window.addEventListener('online',()=>{if(S.room)join()});
 
 /* ---------- avatar ---------- */
 function pickAvatar(){const f=$('#avFile');f.value='';f.click()}
