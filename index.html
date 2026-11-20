@@ -382,6 +382,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .alert p{font-size:13px;margin-top:3px;color:var(--l1)}
 .alert input{width:100%;height:30px;margin-top:14px;padding:0 7px;border-radius:7px;border:.5px solid var(--sep);background:var(--g1);outline:none;font-size:16px}
 .alert .acts{display:grid;grid-template-columns:1fr 1fr;border-top:.5px solid var(--sep)}
+.alert .acts button:only-child{grid-column:1/-1;font-weight:600}
 .alert .acts button{height:44px;font-size:17px;color:#0a84ff}
 .alert .acts button+button{border-left:.5px solid var(--sep);font-weight:600}
 .alert .acts button.red{color:var(--red)}
@@ -609,7 +610,7 @@ function wire(c,g){
   c.on('close',()=>{if(g!==gen)return;conns=conns.filter(x=>x!==c);if(!conns.length){if(isHost)setNet('waiting');else retry()}});
   c.on('error',()=>{});
 }
-const hello=()=>({t:'hello',noav:S.avatars[S.pid]?[]:[S.pid],names:S.names,avatars:S.avatars,catches:Object.values(S.catches),deleted:Object.keys(S.deleted)});
+const hello=()=>({t:'hello',owner:S.owner||null,noav:S.avatars[S.pid]?[]:[S.pid],names:S.names,avatars:S.avatars,catches:Object.values(S.catches),deleted:Object.keys(S.deleted)});
 function send(m,ex){conns.forEach(c=>{if(c!==ex&&c.open){try{c.send(m)}catch(e){}}})}
 const n01=v=>v==null||(typeof v==='number'&&v>=0&&v<=1);
 function okCatch(c){
@@ -625,6 +626,8 @@ function clean(c){const o={id:c.id,pid:c.pid,sp:normSp(c.sp),g:c.g!=null?c.g:Mat
 function onData(d,from){
   if(!d||typeof d!=='object')return;let ch=false;
   if(d.t==='hello'){
+    if(!S.owner&&typeof d.owner==='string'&&d.owner.length<40){S.owner=d.owner;ch=true}
+    else if(!S.owner&&!d.owner&&isHost){S.owner=S.pid;save();send(hello())}
     if(d.avatars&&typeof d.avatars==='object')for(const[k,v]of Object.entries(d.avatars)){if(k!==S.pid&&avOk(v)&&S.avatars[k]!==v){S.avatars[k]=v;ch=true}}
     if(Array.isArray(d.noav))for(const k of d.noav){if(k!==S.pid&&S.avatars[k]){delete S.avatars[k];ch=true}}
     if(d.names&&typeof d.names==='object')for(const[k,v]of Object.entries(d.names)){if(k!==S.pid&&typeof v==='string'&&v.length<=18&&S.names[k]!==v){S.names[k]=v;ch=true}}
@@ -636,10 +639,15 @@ function onData(d,from){
     toast(`${nm(c.pid)}: ${c.sp}, ${kgT(c.g)}`,r==='rec',c.pid);
   }else if(d.t==='upd'&&okCatch(d.c)&&S.catches[d.c.id]&&S.catches[d.c.id].pid===d.c.pid&&(d.c.u||0)>(S.catches[d.c.id].u||0)){
     S.catches[d.c.id]=clean(d.c);ch=true;if(isHost)send(d,from);
+  }else if(d.t==='wipe'&&d.room===S.room&&S.owner&&d.pid===S.owner&&d.pid!==S.pid){
+    if(isHost)send(d,from);const who=nm(d.pid);setTimeout(()=>{wipeAll();alertBox({title:'Комната закрыта',msg:`${who} закрыл комнату. Весь улов удалён.`,ok:'Понятно',solo:1,f:()=>{}})},300);return
   }else if(d.t==='del'&&typeof d.id==='string'&&!S.deleted[d.id]){S.deleted[d.id]=1;delete S.catches[d.id];ch=true;if(isHost)send(d,from)}
   if(ch){save();render()}
 }
 
+function wipeAll(){closeS2();cleanup();S.catches={};S.deleted={};S.seenWeek=0;S.lastBackupCount=0;S.mapSp=null;
+  for(const k of Object.keys(S.names))if(k!==S.pid)delete S.names[k];for(const k of Object.keys(S.avatars))if(k!==S.pid)delete S.avatars[k];
+  S.room=null;S.owner=null;save();history.replaceState(null,'',location.pathname);net='off';render()}
 /* ---------- stats ---------- */
 function since(){const n=new Date();n.setHours(0,0,0,0);if(period==='today')return+n;if(period==='week')return wkStart(Date.now());return 0}
 const all=()=>Object.values(S.catches).filter(c=>!S.deleted[c.id]);
@@ -656,7 +664,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'7 дней',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='2.5';
+const APPV='2.6';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
@@ -866,7 +874,8 @@ function renderProfile(){
       <button class="row ii" data-export>${rowIc('save',backupDue()?'red':'c3')}<span class="t"><b>Сохранить копию</b><em>${d===null?'Копии ещё нет':`Последняя ${d===0?'сегодня':`${d} ${plural(d,'день','дня','дней')} назад`}`}</em></span>${backupDue()?'<i class="rdot"></i>':''}</button>
       <button class="row ii" id="importBtn">${rowIc('restore','gray')}<span class="t"><b>Восстановить из файла</b></span></button></div>
     <p class="gf">История хранится на обоих телефонах и восстанавливается от друга при подключении.</p>
-    <div class="group" style="margin-top:24px"><button class="row red" id="leaveBtn"><span class="t"><b>Выйти из комнаты</b></span></button></div>
+    <div class="group" style="margin-top:24px"><button class="row red" id="leaveBtn"><span class="t"><b>${S.owner===S.pid?'Закрыть комнату':'Выйти из комнаты'}</b></span></button></div>
+    ${S.owner===S.pid?'<p class="gf">Ты создал комнату. Если закроешь её, весь улов удалится у обоих.</p>':''}
     <p class="gf">Карта © Rockstar Games. Неофициальный фан-проект. Версия ${APPV}.</p>`;
 }
 function renderSpeciesDetail(sp){
@@ -945,9 +954,9 @@ function actionSheet(title,sub,acts){
   as.onclick=e=>{const b=e.target.closest('button');if(!b)return;close();const i=+b.dataset.i;if(i>=0)acts[i].f()};
   ov.onclick=close;requestAnimationFrame(()=>{if(shut)return;as.classList.add('open');ov.classList.add('open')});
 }
-function alertBox({title,msg,input,max,ok,red,f}){
+function alertBox({title,msg,input,max,ok,red,f,solo}){
   const al=$('#alert'),ov=$('#ov2');
-  al.innerHTML=`<div class="bd"><h4>${esc(title)}</h4>${msg?`<p>${esc(msg)}</p>`:''}${input!=null?`<input id="alIn" maxlength="${max||300}" value="${esc(input)}">`:''}</div><div class="acts"><button data-a="0">Отмена</button><button data-a="1" class="${red?'red':''}">${esc(ok)}</button></div>`;
+  al.innerHTML=`<div class="bd"><h4>${esc(title)}</h4>${msg?`<p>${esc(msg)}</p>`:''}${input!=null?`<input id="alIn" maxlength="${max||300}" value="${esc(input)}">`:''}</div><div class="acts">${solo?'':'<button data-a="0">Отмена</button>'}<button data-a="1" class="${red?'red':''}">${esc(ok)}</button></div>`;
   let shut=false;const close=()=>{shut=true;al.classList.remove('open');ov.classList.remove('open')};
   al.onclick=e=>{const b=e.target.closest('button');if(!b)return;const v=input!=null?$('#alIn').value:null;close();if(b.dataset.a==='1')f(v)};
   ov.onclick=close;requestAnimationFrame(()=>{if(shut)return;al.classList.add('open');ov.classList.add('open');const i=$('#alIn');if(i){i.focus();i.select()}});
@@ -1023,8 +1032,8 @@ async function share(){
 /* ---------- events ---------- */
 function setName(){const n=$('#nameIn').value.trim().slice(0,18);if(!n){$('#setupErr').textContent='Введи имя.';$('#nameIn').focus();return false}S.names[S.pid]=n;return true}
 function enter(code){S.room=code;save();history.replaceState(null,'','#'+code);render();join()}
-$('#createBtn').onclick=()=>{if(setName())enter(rid(5))};
-$('#joinBtn').onclick=()=>{if(!setName())return;const c=$('#codeIn').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length!==5){$('#setupErr').textContent='В коде 5 символов.';$('#codeIn').focus();return}enter(c)};
+$('#createBtn').onclick=()=>{if(setName()){S.owner=S.pid;enter(rid(5))}};
+$('#joinBtn').onclick=()=>{if(!setName())return;const c=$('#codeIn').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length!==5){$('#setupErr').textContent='В коде 5 символов.';$('#codeIn').focus();return}S.owner=null;enter(c)};
 $('#codeIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#joinBtn').click()}});
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();($('#codeIn').value?$('#joinBtn'):$('#createBtn')).click()}});
 document.addEventListener('click',e=>{
@@ -1039,7 +1048,9 @@ document.addEventListener('click',e=>{
     acts.push({t:'Открыть вид',f:()=>openS2('species',c.sp)});
     if(c.pid===S.pid){acts.push({t:'Изменить',f:()=>openSheet(null,c.id)});acts.push({t:'Удалить запись',red:1,f:()=>{S.deleted[c.id]=1;delete S.catches[c.id];save();send({t:'del',id:c.id});render()}})}actionSheet(c.sp,kgT(c.g)+(c.pid===S.pid?'':`, ${nm(c.pid)}`),acts);return}
   if(t.closest('#renameBtn')){alertBox({title:'Твоё имя',msg:'Его увидит соперник.',input:nm(S.pid),max:18,ok:'Сохранить',f:v=>{v=(v||'').trim().slice(0,18);if(v){S.names[S.pid]=v;save();send(hello());render()}}});return}
-  if(t.closest('#leaveBtn')){actionSheet('Выйти из комнаты?','Улов останется на этом устройстве.',[{t:'Выйти',red:1,f:()=>{closeS2();cleanup();S.room=null;save();history.replaceState(null,'',location.pathname);net='off';render()}}]);return}
+  if(t.closest('#leaveBtn')){
+    if(S.owner===S.pid){actionSheet('Закрыть комнату?','Ты создатель комнаты. Весь улов удалится у тебя и у друга. Отменить нельзя.',[{t:'Закрыть и удалить всё',red:1,f:()=>{send({t:'wipe',room:S.room,pid:S.pid});setTimeout(()=>{wipeAll();toast('Комната закрыта, улов удалён')},400)}}]);return}
+    actionSheet('Выйти из комнаты?','Улов останется на этом устройстве.',[{t:'Выйти',red:1,f:()=>{closeS2();cleanup();S.room=null;S.owner=null;save();history.replaceState(null,'',location.pathname);net='off';render()}}]);return}
   const sp=t.closest('[data-sp]');if(sp){pick=sp.dataset.sp;formState();showPane('form');setTimeout(()=>{const i=unit==='kg'?$('#kgIn'):$('#lbIn');if(!readG())i.focus()},380);return}
   const ns=t.closest('[data-newsp]');if(ns){pick=normSp(ns.dataset.newsp).slice(0,40);formState();showPane('form');return}
   const u=t.closest('#unitSeg button');if(u){setUnit(u.dataset.u);return}
@@ -1117,7 +1128,7 @@ $('#bkFile').addEventListener('change',async()=>{
 });
 IDB.get('state').then(d=>{
   if(!d||typeof d!=='object')return;let ch=false;
-  if(FRESH&&typeof d.pid==='string'){S.pid=d.pid;if(d.room)S.room=d.room;for(const k of['period','view','unit','lastBackup','lastBackupCount','lastLoc','hideA2HS'])if(d[k]!=null)S[k]=d[k];ch=true}
+  if(FRESH&&typeof d.pid==='string'){S.pid=d.pid;if(d.room)S.room=d.room;if(d.owner)S.owner=d.owner;for(const k of['period','view','unit','lastBackup','lastBackupCount','lastLoc','hideA2HS'])if(d[k]!=null)S[k]=d[k];ch=true}
   if(d.deleted)for(const id of Object.keys(d.deleted))if(!S.deleted[id]){S.deleted[id]=1;delete S.catches[id];ch=true}
   if(d.catches)for(const c of Object.values(d.catches))if(okCatch(c)&&!S.deleted[c.id]&&!S.catches[c.id]){S.catches[c.id]=clean(c);ch=true}
   for(const k of['names','avatars'])if(d[k]&&typeof d[k]==='object')for(const[a,v]of Object.entries(d[k]))if(!S[k][a]){S[k][a]=v;ch=true}
