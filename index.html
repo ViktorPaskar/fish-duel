@@ -180,7 +180,7 @@ button.row:active,a.row:active{background:var(--g2)}
 
 /* ---------- map page ---------- */
 #p-map{position:fixed;inset:0;padding:0;background:#41f7d5}
-#bigmap{position:absolute;left:0;right:0;top:calc(44px + var(--st));bottom:calc(49px + var(--sb))}
+#bigmap{position:absolute;z-index:0;left:0;right:0;top:calc(44px + var(--st));bottom:calc(49px + var(--sb))}
 .mapseg{position:absolute;z-index:500;left:50%;top:calc(56px + var(--st));transform:translateX(-50%);width:min(320px,calc(100% - 32px));background:rgba(28,28,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:9px}
 .zoom{position:absolute;z-index:500;right:12px;bottom:calc(49px + var(--sb) + 14px);display:grid;border-radius:10px;overflow:hidden;background:rgba(28,28,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
 .zoom button{display:grid;place-items:center;width:44px;height:44px;color:var(--l1)}
@@ -243,8 +243,8 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 /* picker */
 .picker{position:fixed;inset:0;z-index:80;background:#41f7d5;transform:translateY(100%);transition:transform .45s var(--spring)}
 .picker.open{transform:none}
-#pickmap{position:absolute;inset:0}
-.picker .nb{position:absolute}
+#pickmap{position:absolute;inset:0;z-index:0}
+.picker .nb{position:absolute;z-index:700}
 .picker .nb .l,.picker .nb .r{display:flex;align-items:center;height:44px;color:var(--tint);font-size:17px}
 .picker .nb .l{justify-self:start}
 .picker .nb .r{justify-self:end;font-weight:600}
@@ -398,7 +398,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <div class="picker" id="picker" aria-hidden="true">
   <div id="pickmap"></div>
   <div class="cross"><div class="mk"><svg class="i"><use href="#i-fish"/></svg></div></div>
-  <header class="nb solid" data-vv="top"><div class="in"><button class="l" id="pkCancel">Отмена</button><span class="ct">Место улова</span><button class="r" id="pkDone">Готово</button></div></header>
+  <header class="nb solid always" data-vv="top"><div class="in"><button class="l" id="pkCancel">Отмена</button><span class="ct">Место улова</span><button class="r" id="pkDone">Готово</button></div></header>
 </div>
 
 <div class="ov" id="ov2"></div>
