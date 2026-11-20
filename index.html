@@ -131,6 +131,55 @@ button.row:active,a.row:active{background:var(--g2)}
 .tip .pbtn{margin-top:10px}
 .x2{position:absolute;top:6px;right:6px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;color:var(--l3)}
 .x2 svg{width:15px;height:15px;stroke-width:2.4}
+/* v2 */
+.mebtn{justify-self:start;position:relative;display:grid;place-items:center;width:40px;height:40px;margin-left:-4px}
+.mebtn .av{width:32px;height:32px;font-size:13px}
+.mebtn .badge{position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;background:var(--red);border:2px solid var(--bg)}
+.avw{position:relative;display:inline-grid;flex:none}
+.sd{position:absolute;right:-2px;bottom:-2px;width:13px;height:13px;border-radius:50%;border:2.5px solid var(--g1);background:#8e8e93}
+.sd.online{background:#30d158}
+.ico{display:grid;place-items:center;width:29px;height:29px;border-radius:7px;flex:none;color:#fff}
+.ico svg{width:17px;height:17px;stroke-width:2.1}
+.ico.c1{background:#ff2d78}.ico.c2{background:#0a84ff}.ico.c3{background:#30d158}.ico.c4{background:#ff9f0a}.ico.c5{background:#5e5ce6}
+.ico.gray{background:var(--g3)}.ico.red{background:var(--red)}.ico.gold{background:linear-gradient(135deg,#ffd60a,#ff9f0a);color:#000}
+.ico.lg{width:64px;height:64px;border-radius:16px}.ico.lg svg{width:36px;height:36px}
+.row.ii+.row.ii::before{left:57px}
+.av.xs{width:24px;height:24px;font-size:11px}
+.av.xs.ph.me,.av.xs.ph.op{box-shadow:0 0 0 1.5px var(--g1),0 0 0 3px currentColor}
+.av.xs.ph.me{color:var(--me)}.av.xs.ph.op{color:var(--op)}
+.done{display:flex;gap:6px}
+.dscore{display:flex;align-items:center;justify-content:center;gap:18px;padding:18px 16px 4px}
+.dscore b{font-family:var(--round);font-size:36px;font-weight:700;font-variant-numeric:tabular-nums}
+.dscore .me{color:var(--me)}.dscore .op{color:var(--op)}
+.days{display:flex;gap:8px;align-items:flex-end;padding:12px 16px 14px}
+.dcol{flex:1;display:grid;justify-items:center;gap:5px}
+.dbar{display:block;width:100%;max-width:30px;border-radius:6px;background:var(--fill)}
+.dbar.me{background:var(--meG)}.dbar.op{background:var(--opG)}
+.dv{font-family:var(--round);font-size:11px;color:var(--l2)}
+.dlab{font-size:11px;color:var(--l2)}
+.dayh{display:flex;justify-content:space-between;align-items:center}
+.dw{display:flex;align-items:center;gap:4px;color:var(--gold)}
+.dw svg{width:14px;height:14px;stroke-width:2.2}
+.legend{display:flex;gap:14px;margin-top:6px;font-size:13px;color:var(--l2)}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:8px;height:8px;border-radius:50%}.legend i.me{background:var(--me)}.legend i.op{background:var(--op)}
+.prog span{display:block}
+.rdot{width:10px;height:10px;border-radius:50%;background:var(--red);flex:none}
+.prof{display:grid;justify-items:center;gap:4px;padding:6px 0 10px}
+.prof .av{width:88px;height:88px;font-size:34px}
+.prof b{margin-top:8px;font-size:22px;font-weight:700}
+.prof .link{color:var(--tint);font-size:15px;min-height:36px}
+.sph{display:grid;justify-items:center;gap:4px;text-align:center;padding:6px 0 4px}
+.sph b{margin-top:10px;font-size:22px;font-weight:700}
+.sph em{font-style:normal;font-size:15px;color:var(--l2)}
+#spmap{height:230px;border-radius:12px;overflow:hidden;isolation:isolate;background:#41f7d5}
+.mapf{position:absolute;z-index:500;left:0;right:0;top:calc(98px + var(--st));display:flex;justify-content:center;gap:8px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.mapf::-webkit-scrollbar{display:none}
+.chip{flex:none;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:16px;background:rgba(28,28,30,.92);color:#fff;font-size:14px;font-weight:500;white-space:nowrap}
+.chip.on{background:#fff;color:#000}
+.chip svg{width:14px;height:14px;stroke-width:2.4}
+.chip .av.xs{width:20px;height:20px;font-size:10px;box-shadow:none}
+.as .grp{max-height:62vh;overflow:auto}
 /* stat rows */
 .sr .t b{font-size:17px}
 .sr .vals{display:flex;gap:4px}
@@ -324,6 +373,14 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <symbol id="i-fishf" viewBox="0 0 24 24"><path d="M7 12c2.3-3.4 5.2-5.2 8.4-5.2 2.5 0 4.6 1.6 6.6 5.2-2 3.6-4.1 5.2-6.6 5.2-3.2 0-6.1-1.8-8.4-5.2zM7 12 2.5 8.4v7.2z"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
   <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M5 15v4h14v-4"/></symbol>
+  <symbol id="i-weight" viewBox="0 0 24 24"><path d="M9 7a3 3 0 1 1 6 0"/><path d="M6.5 8h11l2 12h-15z"/></symbol>
+  <symbol id="i-stack" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5zM3 12.5l9 5 9-5M3 17l9 5 9-5"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-6"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></symbol>
+  <symbol id="i-restore" viewBox="0 0 24 24"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 15v4h14v-4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></symbol>
+  <symbol id="i-chevd" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
 </svg>
 
@@ -346,7 +403,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 </div></section>
 
 <!-- NAV BAR -->
-<header class="nb hidden" id="nb" data-vv="top"><div class="in"><span></span><span class="ct" id="ct"></span><span class="r"><button class="cbtn big" id="addBtn" aria-label="Записать улов"><svg class="i"><use href="#i-plus"/></svg></button></span></div></header>
+<header class="nb hidden" id="nb" data-vv="top"><div class="in"><button class="mebtn" id="meBtn" aria-label="Профиль"></button><span class="ct" id="ct"></span><span class="r"><button class="cbtn big" id="addBtn" aria-label="Записать улов"><svg class="i"><use href="#i-plus"/></svg></button></span></div></header>
 
 <main id="app" class="hidden">
   <section class="page" id="p-board"><div class="wrap" id="board"></div></section>
@@ -355,6 +412,7 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
   <section class="hidden" id="p-map">
     <div id="bigmap"></div>
     <div class="seg mapseg" data-seg></div>
+    <div class="mapf" id="mapf"></div>
     <div class="zoom"><button id="zin" aria-label="Приблизить"><svg class="i"><use href="#i-plus"/></svg></button><button id="zout" aria-label="Отдалить"><svg class="i"><use href="#i-minus"/></svg></button></div>
   </section>
 </main>
@@ -397,6 +455,13 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       </div>
     </div>
   </div>
+</div>
+
+<!-- SECOND SHEET: profile, species -->
+<div class="ov" id="ov3"></div>
+<div class="sheet" id="sheet2" role="dialog" aria-modal="true" aria-labelledby="s2T">
+  <div class="grab"></div>
+  <div class="panes"><div class="pane"><div class="snb"><span></span><h2 id="s2T"></h2><button class="r" id="s2Done">Готово</button></div><div class="sbody" id="s2B"></div></div></div>
 </div>
 
 <!-- MAP PICKER -->
@@ -469,7 +534,7 @@ const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&
 /* ---------- networking: PeerJS / WebRTC ---------- */
 const PFX='fishduel-v1-';
 let peer=null,conns=[],isHost=false,gen=0,retryT=null,net='off';
-function setNet(s){net=s;if(view==='board'&&S.room)renderBoard()}
+function setNet(s){net=s;if(!S.room)return;if(view==='board')renderBoard();if(s2&&s2.kind==='profile')renderProfile()}
 function cleanup(){clearTimeout(retryT);gen++;conns.forEach(c=>{try{c.close()}catch(e){}});conns=[];if(peer){try{peer.destroy()}catch(e){}peer=null}}
 function retry(){const g=gen;setNet('connecting');clearTimeout(retryT);retryT=setTimeout(()=>{if(g===gen)join()},2500+Math.random()*1500)}
 function join(){
@@ -496,9 +561,10 @@ function okCatch(c){
   const g=c.g!=null?c.g:(Number.isInteger(c.oz)?Math.round(c.oz*28.3495):null);
   if(!Number.isInteger(g)||g<=0||g>500000)return false;
   if(c.note!=null&&(typeof c.note!=='string'||c.note.length>50))return false;
+  if(c.u!=null&&typeof c.u!=='number')return false;
   return n01(c.x)&&n01(c.y);
 }
-function clean(c){const o={id:c.id,pid:c.pid,sp:normSp(c.sp),g:c.g!=null?c.g:Math.round(c.oz*28.3495),ts:c.ts,note:c.note?String(c.note).trim():''};if(c.x!=null&&c.y!=null){o.x=c.x;o.y=c.y;if(c.m===2)o.m=2;remap(o)}return o}
+function clean(c){const o={id:c.id,pid:c.pid,sp:normSp(c.sp),g:c.g!=null?c.g:Math.round(c.oz*28.3495),ts:c.ts,note:c.note?String(c.note).trim():''};if(c.x!=null&&c.y!=null){o.x=c.x;o.y=c.y;if(c.m===2)o.m=2;remap(o)}if(typeof c.u==='number')o.u=c.u;return o}
 function onData(d,from){
   if(!d||typeof d!=='object')return;let ch=false;
   if(d.t==='hello'){
@@ -506,17 +572,19 @@ function onData(d,from){
     if(Array.isArray(d.noav))for(const k of d.noav){if(k!==S.pid&&S.avatars[k]){delete S.avatars[k];ch=true}}
     if(d.names&&typeof d.names==='object')for(const[k,v]of Object.entries(d.names)){if(k!==S.pid&&typeof v==='string'&&v.length<=18&&S.names[k]!==v){S.names[k]=v;ch=true}}
     if(Array.isArray(d.deleted))for(const id of d.deleted){if(typeof id==='string'&&!S.deleted[id]){S.deleted[id]=1;delete S.catches[id];ch=true}}
-    if(Array.isArray(d.catches))for(const c of d.catches){if(okCatch(c)&&!S.deleted[c.id]&&!S.catches[c.id]){S.catches[c.id]=clean(c);ch=true}}
+    if(Array.isArray(d.catches))for(const c of d.catches){if(!okCatch(c)||S.deleted[c.id])continue;const ex=S.catches[c.id];if(!ex||(ex.pid===c.pid&&(c.u||0)>(ex.u||0))){S.catches[c.id]=clean(c);ch=true}}
     if(ch&&isHost)send(hello(),from);
   }else if(d.t==='add'&&okCatch(d.c)&&!S.deleted[d.c.id]&&!S.catches[d.c.id]){
     const c=clean(d.c),r=recordOf(c);S.catches[c.id]=c;ch=true;if(isHost)send(d,from);
     toast(`${nm(c.pid)}: ${c.sp}, ${kgT(c.g)}`,r==='rec',c.pid);
+  }else if(d.t==='upd'&&okCatch(d.c)&&S.catches[d.c.id]&&S.catches[d.c.id].pid===d.c.pid&&(d.c.u||0)>(S.catches[d.c.id].u||0)){
+    S.catches[d.c.id]=clean(d.c);ch=true;if(isHost)send(d,from);
   }else if(d.t==='del'&&typeof d.id==='string'&&!S.deleted[d.id]){S.deleted[d.id]=1;delete S.catches[d.id];ch=true;if(isHost)send(d,from)}
   if(ch){save();render()}
 }
 
 /* ---------- stats ---------- */
-function since(){const n=new Date();if(period==='today'){n.setHours(0,0,0,0);return+n}if(period==='week')return Date.now()-7*864e5;return 0}
+function since(){const n=new Date();n.setHours(0,0,0,0);if(period==='today')return+n;if(period==='week'){n.setDate(n.getDate()-(n.getDay()+6)%7);return+n}return 0}
 const all=()=>Object.values(S.catches).filter(c=>!S.deleted[c.id]);
 const inPeriod=()=>all().filter(c=>c.ts>=since());
 function players(){const ids=new Set([S.pid,...Object.keys(S.names),...all().map(c=>c.pid)]);return[S.pid,...[...ids].filter(x=>x!==S.pid)]}
@@ -531,7 +599,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'Неделя',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='1.9';
+const APPV='2.0';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
@@ -541,87 +609,146 @@ function render(){
   for(const v of['board','log','species','map'])$('#p-'+v).classList.toggle('hidden',view!==v);
   document.querySelectorAll('.tabbar button').forEach(b=>{if(b.dataset.v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   $('#ct').textContent=TITLES[view];$('#nb').classList.toggle('always',view==='map');$('#nb').classList.toggle('solid',view==='map'||scrollY>36);
+  $('#meBtn').innerHTML=avH(S.pid)+(attention()?'<i class="badge"></i>':'');
   if(view==='board')renderBoard();else if(view==='log')renderLog();else if(view==='species')renderSpecies();else renderMap();
-}
-function sub(){
-  const st={online:'друг онлайн',waiting:'ждём друга',connecting:'подключение…',off:'нет связи'}[net];
-  return `<p class="sub">Комната <b>${esc(S.room)}</b>, ${st}</p>`;
+  if(s2&&s2.kind==='profile')renderProfile();
 }
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const STANDALONE=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
-function tipsHTML(){
-  let h='';const n=all().length,days=S.lastBackup?Math.floor((Date.now()-S.lastBackup)/864e5):null;
-  if(IOS&&!STANDALONE&&!S.hideA2HS)h+=`<div class="tip"><span class="ic">${ic('share')}</span><div class="t"><b>Добавь на экран «Домой»</b><p>Нажми «Поделиться», затем «На экран Домой». Так iPhone не сотрёт историю.</p></div><button class="x2" data-hide="A2HS" aria-label="Скрыть">${ic('x')}</button></div>`;
-  if(n&&n!==S.lastBackupCount&&(days===null||days>=7))h+=`<div class="tip"><span class="ic">${ic('save')}</span><div class="t"><b>Сохрани копию истории</b><p>${days===null?'Копии ещё нет.':`Последняя копия ${days} ${plural(days,'день','дня','дней')} назад.`} Файл попадёт в «Файлы».</p><button class="pbtn" data-export>Сохранить копию</button></div></div>`;
-  return h;
+const backupDays=()=>S.lastBackup?Math.floor((Date.now()-S.lastBackup)/864e5):null;
+const backupDue=()=>{const n=all().length,d=backupDays();return n>0&&n!==S.lastBackupCount&&(d===null||d>=7)};
+const a2hsDue=()=>IOS&&!STANDALONE&&!S.hideA2HS;
+const attention=()=>backupDue()||a2hsDue();
+const statusAv=(pid,x='')=>`<span class="avw">${avH(pid,x)}<i class="sd ${net==='online'?'online':''}" title="${net==='online'?'Онлайн':'Не в сети'}"></i></span>`;
+const rowIc=(n,c)=>`<span class="ico ${c}">${ic(n)}</span>`;
+const dKey=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()};
+/* winner of each calendar day = heaviest single fish that day */
+function dayResults(list,opPid){
+  const D={};
+  for(const c of list){const k=dKey(c.ts);const r=D[k]||(D[k]={k,ts:c.ts,me:0,op:0});if(c.pid===S.pid)r.me=Math.max(r.me,c.g);else if(c.pid===opPid)r.op=Math.max(r.op,c.g);r.ts=Math.min(r.ts,c.ts)}
+  return Object.values(D).map(r=>({...r,win:r.me>r.op?'me':r.op>r.me?'op':'tie'})).sort((a,b)=>a.ts-b.ts);
 }
+/* in-game challenges (Progress > Challenges) we can check from the log */
+const ACH=[
+  {id:'cal',t:'Задание Кэла',d:'Parrotfish тяжелее 0,91 кг',i:'fish',test:L=>L.some(c=>c.sp==='Stoplight Parrotfish'&&c.g>907)},
+  {id:'big',t:'Big Fish',d:'Рыба от 9,07 кг (20 lb)',i:'weight',test:L=>L.some(c=>c.g>=9072)},
+  {id:'ang',t:'Angler',d:'4 вида за 6 минут',i:'timer',test:L=>{const s=[...L].sort((a,b)=>a.ts-b.ts);for(let i=0;i<s.length;i++){const set=new Set();for(let j=i;j<s.length&&s[j].ts-s[i].ts<=36e4;j++)set.add(s[j].sp);if(set.size>=4)return true}return false}},
+  {id:'pro',t:'Pro Angler',d:`Все ${TOTAL} видов`,i:'stack',test:L=>new Set(L.map(c=>c.sp).filter(s=>RU[s]!==undefined)).size>=TOTAL,prog:L=>new Set(L.map(c=>c.sp).filter(s=>RU[s]!==undefined)).size}
+];
+
 function renderBoard(){
   const L=inPeriod(),P=stats(L),me=P[S.pid],op=rival(P);
   const a=me.best?me.best.g:0,b=op&&op.best?op.best.g:0,meL=a>b,opL=!!op&&b>a;
   const col=(p,cls,lead)=>{
     if(!p)return `<div class="col op invite"><div class="who"><span class="av">+</span><span>Соперник</span></div><button class="pbtn" data-share>${ic('share')}Пригласить</button></div>`;
-    return `<div class="col ${cls}${(a||b)&&!lead?' dim':''}"><div class="who">${avH(p.pid)}<span>${p.pid===S.pid?'Ты':esc(nm(p.pid))}</span></div>
+    return `<div class="col ${cls}${(a||b)&&!lead?' dim':''}"><div class="who">${p.pid===S.pid?avH(p.pid):statusAv(p.pid)}<span>${p.pid===S.pid?'Ты':esc(nm(p.pid))}</span></div>
       <div class="big">${p.best?kg(p.best.g)+'<small>кг</small>':'0<small>кг</small>'}</div>
       <div class="spn">${p.best?esc(p.best.sp):'Нет улова'}</div>${lead?`<span class="leadpill">${ic('crown')}Лидер</span>`:''}</div>`};
   let foot='';
-  if(op){const msg=!a&&!b?`Пока никто ничего не поймал ${PL[period]}.`:a===b?'Ничья.':meL?`Ты впереди на <b>${kgT(a-b)}</b>.`:`${esc(nm(op.pid))} впереди на <b>${kgT(b-a)}</b>.`;
+  if(op){const msg=!a&&!b?`Самая тяжёлая рыба ${PL[period]} решит, кто лидер.`:a===b?'Ничья.':meL?`Ты впереди на <b>${kgT(a-b)}</b>.`:`${esc(nm(op.pid))} впереди на <b>${kgT(b-a)}</b>.`;
     foot=`<div class="foot"><div class="track">${a||b?`<i class="me" style="flex-grow:${a}"></i><i class="op" style="flex-grow:${b}"></i>`:''}</div><p>${msg}</p></div>`}
-  let h=`<h1 class="lt">Табло</h1>${sub()}<div class="seg" data-seg>${segHTML()}</div>
-    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${foot}</div>${tipsHTML()}`;
+  let h=`<h1 class="lt">Табло</h1><div class="seg" data-seg>${segHTML()}</div>
+    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${foot}</div>`;
   if(L.length){
-    const wins={[S.pid]:0};if(op)wins[op.pid]=0;
-    for(const sp of new Set(L.map(c=>c.sp))){const x=me.sp[sp],y=op&&op.sp[sp];if(x&&(!y||x.g>y.g))wins[S.pid]++;else if(y&&(!x||y.g>x.g))wins[op.pid]++}
-    const rows=[['Общий вес',p=>p?p.total:0,v=>v?kg(v):'—'],['Рыб поймано',p=>p?p.count:0,v=>v],['Видов',p=>p?Object.keys(p.sp).length:0,v=>v],
-      ['Рекорды видов',p=>p?wins[p.pid]||0:0,v=>v],['Средний вес',p=>p&&p.count?Math.round(p.total/p.count):0,v=>v?kg(v):'—']];
+    const rows=[['weight','c1','Общий вес',p=>p?p.total:0,v=>v?kg(v):'—'],['fish','c2','Поймано',p=>p?p.count:0,v=>v],
+      ['stack','c3','Видов',p=>p?Object.keys(p.sp).length:0,v=>v],['gauge','c4','Средний',p=>p&&p.count?Math.round(p.total/p.count):0,v=>v?kg(v):'—']];
     h+=`<div class="gh">Счёт</div><div class="colhead"><span class="me">Ты</span><span class="op">${op?esc(nm(op.pid)):'—'}</span></div><div class="group">`+
-      rows.map(([l,f,s])=>{const x=f(me),y=f(op);return `<div class="row sr"><span class="t"><b>${l}</b></span><span class="vals"><span class="me${x>y?' w':''}">${s(x)}</span><span class="op${y>x?' w':''}">${op?s(y):'—'}</span></span></div>`}).join('')+'</div>';
+      rows.map(([i,c,l,f,s])=>{const x=f(me),y=f(op);return `<div class="row sr ii">${rowIc(i,c)}<span class="t"><b>${l}</b></span><span class="vals"><span class="me${x>y?' w':''}">${s(x)}</span><span class="op${y>x?' w':''}">${op?s(y):'—'}</span></span></div>`}).join('')+'</div>';
   }else h+=`<div class="empty">${ic('fish')}<h3>Нет улова ${PL[period]}</h3><p>Запиши рыбу, и счёт появится здесь.</p><button class="pbtn" data-add>Записать улов</button></div>`;
-  const st={online:'Онлайн',waiting:'Ждём друга',connecting:'Подключение',off:'Нет связи'}[net];
-  h+=`<div class="gh">Комната</div><div class="group">
-    <button class="row" data-share><span class="t"><b>Код</b></span><span class="v num">${esc(S.room)}</span>${ic('share','chev" style="width:18px;height:18px;color:var(--tint)')}</button>
-    <div class="row"><span class="t"><b>Статус</b></span><span class="v">${st}</span></div>
-    <button class="row" id="avBtn"><span class="t"><b>Твоё фото</b></span>${avH(S.pid,'sm')}${ic('chev','chev')}</button>
-    <button class="row" id="renameBtn"><span class="t"><b>Твоё имя</b></span><span class="v">${esc(nm(S.pid))}</span>${ic('chev','chev')}</button>
-    <button class="row red" id="leaveBtn"><span class="t"><b>Выйти из комнаты</b></span></button></div>
-    <div class="gh">История</div><div class="group">
-    <div class="row"><span class="t"><b>Записей</b></span><span class="v num">${all().length}</span></div>
-    <button class="row tint" id="exportBtn" data-export><span class="t"><b>Сохранить копию в файл</b></span></button>
-    <button class="row tint" id="importBtn"><span class="t"><b>Восстановить из файла</b></span></button></div>
-    <p class="gf">История хранится на обоих телефонах и восстанавливается от друга при подключении.</p>
-    <p class="gf">Карта © Rockstar Games. Неофициальный фан-проект. Версия ${APPV}.</p>`;
+  if(op){
+    const R=dayResults(all(),op.pid).filter(r=>r.me||r.op),wm=R.filter(r=>r.win==='me').length,wo=R.filter(r=>r.win==='op').length;
+    if(R.length){
+      const last=R.slice(-7),mx=Math.max(...last.map(r=>Math.max(r.me,r.op)));
+      h+=`<div class="gh">Дни<small>победа за самую тяжёлую рыбу дня</small></div><div class="group"><div class="dscore">${avH(S.pid)}<b><span class="me">${wm}</span> : <span class="op">${wo}</span></b>${avH(op.pid)}</div>
+        <div class="days">${last.map(r=>{const d=new Date(r.ts),w=r.win==='tie'?'':r.win,v=Math.max(r.me,r.op);
+          return `<div class="dcol" title="${d.toLocaleDateString('ru-RU')}: ${kgT(v)}"><span class="dv">${kg(v).replace(/,\d+$/,'')}</span><i class="dbar ${w}" style="height:${Math.max(8,Math.round(v/mx*56))}px"></i><span class="dlab">${d.toLocaleDateString('ru-RU',{weekday:'short'})}</span></div>`}).join('')}</div></div>`;
+    }
+  }
+  const A=all(),mine=A.filter(c=>c.pid===S.pid),theirs=op?A.filter(c=>c.pid===op.pid):[];
+  h+=`<div class="gh">Достижения<small>задания из игры</small></div><div class="group">`+ACH.map(x=>{
+    const m=x.test(mine),o=op&&x.test(theirs),any=m||o;
+    const right=x.prog&&!any?`<span class="v num"><span style="color:var(--me)">${x.prog(mine)}</span>${op?` / <span style="color:var(--op)">${x.prog(theirs)}</span>`:''}</span>`:`<span class="done">${m?avH(S.pid,'xs'):''}${o?avH(op.pid,'xs'):''}</span>`;
+    return `<div class="row ii">${rowIc(x.i,any?'gold':'gray')}<span class="t"><b>${x.t}</b><em>${x.d}</em></span>${right}</div>`}).join('')+'</div>';
   $('#board').innerHTML=h;
 }
+
 function renderLog(){
-  const L=inPeriod();let h=`<h1 class="lt">Журнал</h1>${sub()}<div class="seg" data-seg>${segHTML()}</div>`;
+  const L=inPeriod();let h=`<h1 class="lt">Журнал</h1><div class="seg" data-seg>${segHTML()}</div>`;
   if(!L.length){$('#log').innerHTML=h+`<div class="empty">${ic('list')}<h3>Журнал пуст</h3><p>Здесь появится каждая рыба ${PL[period]}.</p><button class="pbtn" data-add>Записать улов</button></div>`;return}
+  const op=rival(stats(L)),days=Object.fromEntries(dayResults(L,op&&op.pid).map(r=>[r.k,r]));
   const R=roomRecords(),sorted=[...L].sort((a,b)=>b.ts-a.ts),td=new Date().toDateString(),yd=new Date(Date.now()-864e5).toDateString();let last='',open=false;
   for(const c of sorted.slice(0,200)){
     const d=new Date(c.ts),ds=d.toDateString();
-    if(ds!==last){if(open)h+='</div>';last=ds;open=true;h+=`<div class="gh s">${ds===td?'Сегодня':ds===yd?'Вчера':d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}</div><div class="group">`}
-    const mine=c.pid===S.pid,tag=mine||c.x!=null?'button':'div';
-    h+=`<${tag} class="row ind" data-act="${esc(c.id)}">${avH(c.pid,'sm')}
+    if(ds!==last){if(open)h+='</div>';last=ds;open=true;const r=days[dKey(c.ts)],w=r&&op&&r.win!=='tie'?(r.win==='me'?S.pid:op.pid):null;
+      h+=`<div class="gh s dayh"><span>${ds===td?'Сегодня':ds===yd?'Вчера':d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}</span>${w?`<span class="dw">${ic('crown')}${avH(w,'xs')}</span>`:''}</div><div class="group">`}
+    const mine=c.pid===S.pid;
+    h+=`<button class="row ind" data-act="${esc(c.id)}">${avH(c.pid,'sm')}
       <span class="t"><b>${esc(c.sp)}</b><em>${mine?'Ты':esc(nm(c.pid))}, ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}${c.note?', '+esc(c.note):''}</em></span>
-      <span class="lw"><b>${R.has(c.id)?ic('trophy'):''}${kg(c.g)}<small>кг</small></b>${c.x!=null?`<em>${ic('pin')}карта</em>`:''}</span></${tag}>`;
+      <span class="lw"><b>${R.has(c.id)?ic('trophy'):''}${kg(c.g)}<small>кг</small></b>${c.x!=null?`<em>${ic('pin')}</em>`:''}</span></button>`;
   }
   $('#log').innerHTML=h+'</div>';
 }
+
 function renderSpecies(){
-  const A=all(),P=stats(A),me=P[S.pid],op=rival(P),q=(S.spq||'').toLowerCase();
-  const got=new Set(A.map(c=>c.sp)),known=[...new Set([...BASE.map(b=>b[0]),...A.map(c=>c.sp)])];
-  const C=2*Math.PI*26,frac=got.size/TOTAL;
-  let h=`<h1 class="lt">Виды</h1><p class="sub">Все ${TOTAL} видов из игрового журнала</p>
+  const A=all(),P=stats(A),me=P[S.pid],op=rival(P);
+  const got=new Set(A.map(c=>c.sp)),C=2*Math.PI*26,frac=Math.min(1,got.size/TOTAL);
+  let h=`<h1 class="lt">Виды</h1>
     <div class="prog"><svg class="ring" viewBox="0 0 64 64"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d78"/><stop offset="1" stop-color="#ff9f0a"/></linearGradient></defs><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(118,118,128,.24)" stroke-width="9"/><circle cx="32" cy="32" r="26" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-frac)}" style="transition:stroke-dashoffset .8s var(--spring)"/></svg>
-    <div><b>${got.size} из ${TOTAL}</b><span>поймано вдвоём</span></div></div>
-    <div class="search"><svg class="i"><use href="#i-search"/></svg><input id="spq" placeholder="Поиск" value="${esc(S.spq||'')}" autocomplete="off" aria-label="Поиск вида"></div><div class="group" id="spGroup" style="margin-top:12px">`;
-  h+=spRows(me,op,got,known,q);
-  $('#species').innerHTML=h+'</div><p class="gf">Цветные точки показывают, кто уже поймал вид. Справа лучший вес в кг.</p>';
-  const inp=$('#spq');inp.oninput=()=>{S.spq=inp.value;$('#spGroup').innerHTML=spRows(me,op,got,known,inp.value.toLowerCase())};
+    <div><b>${got.size} из ${TOTAL}</b><span>поймано вдвоём</span><div class="legend"><span><i class="me"></i>Ты ${Object.keys(me.sp).length}</span>${op?`<span><i class="op"></i>${esc(nm(op.pid))} ${Object.keys(op.sp).length}</span>`:''}</div></div></div>
+    <div class="search"><svg class="i"><use href="#i-search"/></svg><input id="spq" placeholder="Поиск" value="${esc(S.spq||'')}" autocomplete="off" aria-label="Поиск вида"></div><div id="spGroup">`;
+  h+=spRows(me,op,got,(S.spq||'').toLowerCase());
+  $('#species').innerHTML=h+'</div>';
+  const inp=$('#spq');inp.oninput=()=>{S.spq=inp.value;$('#spGroup').innerHTML=spRows(me,op,got,inp.value.toLowerCase())};
 }
-function spRows(me,op,got,known,q){
-  const list=known.filter(s=>!q||s.toLowerCase().includes(q)||(RU[s]||'').toLowerCase().includes(q)).sort((a,b)=>got.has(b)-got.has(a)||a.localeCompare(b));
-  return list.map(s=>{const x=me.sp[s],y=op&&op.sp[s];
-    return `<div class="row"><span class="dots"><i class="${x?'me':''}"></i><i class="${y?'op':''}"></i></span><span class="t"><b>${esc(s)}</b>${RU[s]?`<em>${esc(RU[s])}</em>`:''}</span>
-      <span class="bests">${x||y?`<span class="${x?'me':'no'}">${x?kg(x.g):'—'}</span><span class="${y?'op':'no'}">${y?kg(y.g):'—'}</span>`:''}</span></div>`}).join('')||'<div class="row"><span class="t"><b style="color:var(--l2)">Ничего не найдено</b></span></div>';
+function spRows(me,op,got,q){
+  const known=[...new Set([...BASE.map(b=>b[0]),...all().map(c=>c.sp)])].filter(s=>!q||s.toLowerCase().includes(q)||(RU[s]||'').toLowerCase().includes(q));
+  const row=s=>{const x=me.sp[s],y=op&&op.sp[s];
+    return `<button class="row" data-spd="${esc(s)}"><span class="dots"><i class="${x?'me':''}"></i><i class="${y?'op':''}"></i></span><span class="t"><b>${esc(s)}</b>${RU[s]?`<em>${esc(RU[s])}</em>`:''}</span>
+      <span class="bests">${x||y?`<span class="${x?'me':'no'}">${x?kg(x.g):'—'}</span><span class="${y?'op':'no'}">${y?kg(y.g):'—'}</span>`:''}</span>${ic('chev','chev')}</button>`};
+  const caught=known.filter(s=>got.has(s)).sort((a,b)=>a.localeCompare(b)),rest=known.filter(s=>!got.has(s)).sort((a,b)=>a.localeCompare(b));
+  if(!caught.length&&!rest.length)return '<div class="group" style="margin-top:12px"><div class="row"><span class="t"><b style="color:var(--l2)">Ничего не найдено</b></span></div></div>';
+  return (caught.length?`<div class="gh s">Пойманные</div><div class="group">${caught.map(row).join('')}</div>`:'')+(rest.length?`<div class="gh s">Ещё никто не поймал</div><div class="group">${rest.map(row).join('')}</div>`:'');
+}
+
+/* ---------- second sheet: profile and species details ---------- */
+let s2=null,spMap=null;
+function openS2(kind,arg){s2={kind,arg};renderS2();$('#ov3').classList.add('open');$('#sheet2').classList.add('open');document.body.style.overflow='hidden'}
+function closeS2(){s2=null;$('#ov3').classList.remove('open');$('#sheet2').classList.remove('open');document.body.style.overflow='';if(spMap){spMap.remove();spMap=null}}
+function renderS2(){if(!s2)return;if(s2.kind==='profile')renderProfile();else renderSpeciesDetail(s2.arg)}
+function renderProfile(){
+  $('#s2T').textContent='Профиль';
+  const st={online:'Друг онлайн',waiting:'Ждём друга',connecting:'Подключение',off:'Нет связи'}[net],d=backupDays();
+  $('#s2B').innerHTML=`<div class="prof"><button id="avBtn" class="profav" aria-label="Фото">${avH(S.pid)}</button><b>${esc(nm(S.pid))}</b><button class="link" id="avBtn2">${S.avatars[S.pid]?'Изменить фото':'Добавить фото'}</button></div>
+    ${a2hsDue()?`<div class="tip"><span class="ic">${ic('share')}</span><div class="t"><b>Добавь на экран «Домой»</b><p>«Поделиться», затем «На экран Домой». Так iPhone не сотрёт историю.</p></div><button class="x2" data-hide="A2HS" aria-label="Скрыть">${ic('x')}</button></div>`:''}
+    <div class="gh s">Комната</div><div class="group">
+      <button class="row ii" data-share>${rowIc('share','c2')}<span class="t"><b>Код комнаты</b></span><span class="v num">${esc(S.room)}</span></button>
+      <div class="row ii">${rowIc('wifi',net==='online'?'c3':'gray')}<span class="t"><b>Статус</b></span><span class="v">${st}</span></div>
+      <button class="row ii" id="renameBtn">${rowIc('edit','c5')}<span class="t"><b>Имя</b></span><span class="v">${esc(nm(S.pid))}</span>${ic('chev','chev')}</button></div>
+    <div class="gh s">История</div><div class="group">
+      <div class="row ii">${rowIc('list','c4')}<span class="t"><b>Записей</b></span><span class="v num">${all().length}</span></div>
+      <button class="row ii" data-export>${rowIc('save',backupDue()?'red':'c3')}<span class="t"><b>Сохранить копию</b><em>${d===null?'Копии ещё нет':`Последняя ${d===0?'сегодня':`${d} ${plural(d,'день','дня','дней')} назад`}`}</em></span>${backupDue()?'<i class="rdot"></i>':''}</button>
+      <button class="row ii" id="importBtn">${rowIc('restore','gray')}<span class="t"><b>Восстановить из файла</b></span></button></div>
+    <p class="gf">История хранится на обоих телефонах и восстанавливается от друга при подключении.</p>
+    <div class="group" style="margin-top:24px"><button class="row red" id="leaveBtn"><span class="t"><b>Выйти из комнаты</b></span></button></div>
+    <p class="gf">Карта © Rockstar Games. Неофициальный фан-проект. Версия ${APPV}.</p>`;
+}
+function renderSpeciesDetail(sp){
+  $('#s2T').textContent='Вид';
+  const Ls=all().filter(c=>c.sp===sp),P=stats(Ls),me=P[S.pid],op=rival(stats(all()));const o=op?P[op.pid]:null;
+  const top=[...Ls].sort((a,b)=>b.g-a.g).slice(0,10),lastC=Ls.reduce((m,c)=>!m||c.ts>m.ts?c:m,null),pins=Ls.filter(c=>c.x!=null);
+  const pr=(p,pid)=>`<div class="row ii">${avH(pid,'sm')}<span class="t"><b>${pid===S.pid?'Ты':esc(nm(pid))}</b><em>${p&&p.count?`${p.count} ${plural(p.count,'рыба','рыбы','рыб')}`:'Ещё не ловил'}</em></span><span class="v num" style="color:${p&&p.best?`var(--${pid===S.pid?'me':'op'})`:''}">${p&&p.best?kgT(p.best.g):'—'}</span></div>`;
+  let h=`<div class="sph"><span class="ico ${Ls.length?'gold':'gray'} lg">${ic('fish')}</span><b>${esc(sp)}</b>${RU[sp]?`<em>${esc(RU[sp])}</em>`:''}</div>
+    <div class="gh s">Рекорды</div><div class="group">${pr(me,S.pid)}${op?pr(o,op.pid):''}</div>`;
+  if(sp==='Stoplight Parrotfish')h+=`<p class="gf">Задание Кэла: поймать экземпляр тяжелее 0,91 кг (2 lb).</p>`;
+  if(lastC)h+=`<p class="gf">Последний раз: ${lastC.pid===S.pid?'ты':esc(nm(lastC.pid))}, ${new Date(lastC.ts).toLocaleString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}.</p>`;
+  if(pins.length)h+=`<div class="gh s">Где клевало</div><div id="spmap"></div>`;
+  if(top.length)h+=`<div class="gh s">Лучшие экземпляры</div><div class="group">${top.map(c=>`<div class="row ind">${avH(c.pid,'sm')}<span class="t"><b>${kgT(c.g)}</b><em>${c.pid===S.pid?'Ты':esc(nm(c.pid))}, ${new Date(c.ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}${c.note?', '+esc(c.note):''}</em></span></div>`).join('')}</div>`;
+  else h+=`<div class="empty" style="padding:36px 16px">${ic('fish')}<h3>Ещё не поймана</h3><p>Станет первой в вашей коллекции.</p></div>`;
+  $('#s2B').innerHTML=h;
+  if(spMap){spMap.remove();spMap=null}
+  if(pins.length)setTimeout(()=>{if(!s2||s2.arg!==sp||!$('#spmap'))return;spMap=makeMap($('#spmap'));const g=L.featureGroup();
+    for(const c of pins)L.marker(toLL(c),{icon:mkIcon(c.pid===S.pid?'me':'op',c.pid),interactive:false}).addTo(g);g.addTo(spMap);
+    if(pins.length>1)spMap.fitBounds(g.getBounds().pad(.4),{animate:false,maxZoom:spMap.getMinZoom()+3});else spMap.setView(toLL(pins[0]),spMap.getMinZoom()+2.5,{animate:false})},460);
 }
 
 /* ---------- map: official Leonida map, full-resolution tiles ---------- */
@@ -640,6 +767,8 @@ let bigmap=null,layer=null,focusId=null;
 const mkIcon=(cls,pid)=>{const a=S.avatars[pid];return L.divIcon({className:'',html:a?`<div class="mk ph ${cls}" style="background-image:url('${a}')"></div>`:`<div class="mk ${cls}">${ic('fish')}</div>`,iconSize:cls.includes('best')?[40,40]:[32,32],iconAnchor:cls.includes('best')?[20,47]:[16,39],popupAnchor:[0,-40]})};
 function renderMap(){
   document.querySelector('#p-map [data-seg]').innerHTML=segHTML();
+  const w=S.mapWho||'all',op=rival(stats(all()));
+  $('#mapf').innerHTML=`<button class="chip${w==='all'?' on':''}" data-mw="all">Все</button><button class="chip${w==='me'?' on':''}" data-mw="me">${avH(S.pid,'xs')}Ты</button>${op?`<button class="chip${w==='op'?' on':''}" data-mw="op">${avH(op.pid,'xs')}${esc(nm(op.pid))}</button>`:''}<button class="chip${S.mapSp?' on':''}" data-msp>${S.mapSp?esc(S.mapSp):'Все виды'}${ic('chevd')}</button>`;
   if(!bigmap){bigmap=makeMap($('#bigmap'));layer=L.layerGroup().addTo(bigmap);
     bigmap.on('click',e=>{const xy=toXY(e.latlng);L.popup({closeButton:false,offset:[0,-4]}).setLatLng(e.latlng).setContent(`<button class="pbtn" data-addat="${xy.x.toFixed(5)},${xy.y.toFixed(5)}">${ic('plus')}Улов здесь</button>`).openOn(bigmap)});
     bigmap.on('popupopen',e=>{const b=e.popup.getElement().querySelector('[data-addat]');if(b)b.onclick=()=>{const[x,y]=b.dataset.addat.split(',').map(Number);bigmap.closePopup();openSheet({x,y,m:2})}});
@@ -647,7 +776,7 @@ function renderMap(){
   setTimeout(()=>{if(!bigmap._fit){fitAll(bigmap);bigmap._fit=1}else bigmap.invalidateSize();placePins()},0);
 }
 function placePins(){
-  layer.clearLayers();const Lc=inPeriod().filter(c=>c.x!=null),best=Lc.reduce((m,c)=>!m||c.g>m.g?c:m,null);let target=null;
+  const w=S.mapWho||'all';layer.clearLayers();const Lc=inPeriod().filter(c=>c.x!=null&&(w==='all'||(w==='me')===(c.pid===S.pid))&&(!S.mapSp||c.sp===S.mapSp)),best=Lc.reduce((m,c)=>!m||c.g>m.g?c:m,null);let target=null;
   for(const c of Lc.sort((a,b)=>a.g-b.g)){
     const cls=(c.pid===S.pid?'me':'op')+(best&&c.id===best.id?' best':'');
     const mk=L.marker(toLL(c),{icon:mkIcon(cls,c.pid),title:c.sp}).addTo(layer);
@@ -675,25 +804,28 @@ function toast(t,rec,pid){const el=$('#toast'),a=pid&&S.avatars[pid];el.innerHTM
 function actionSheet(title,sub,acts){
   const as=$('#as'),ov=$('#ov2');
   as.innerHTML=`<div class="grp">${title?`<div class="ttl"><b>${esc(title)}</b>${sub?esc(sub):''}</div>`:''}${acts.map((a,i)=>`<button data-i="${i}" class="${a.red?'red':''}">${esc(a.t)}</button>`).join('')}</div><button class="cancel" data-i="-1">Отмена</button>`;
-  const close=()=>{as.classList.remove('open');ov.classList.remove('open')};
+  let shut=false;const close=()=>{shut=true;as.classList.remove('open');ov.classList.remove('open')};
   as.onclick=e=>{const b=e.target.closest('button');if(!b)return;close();const i=+b.dataset.i;if(i>=0)acts[i].f()};
-  ov.onclick=close;requestAnimationFrame(()=>{as.classList.add('open');ov.classList.add('open')});
+  ov.onclick=close;requestAnimationFrame(()=>{if(shut)return;as.classList.add('open');ov.classList.add('open')});
 }
 function alertBox({title,msg,input,max,ok,red,f}){
   const al=$('#alert'),ov=$('#ov2');
   al.innerHTML=`<div class="bd"><h4>${esc(title)}</h4>${msg?`<p>${esc(msg)}</p>`:''}${input!=null?`<input id="alIn" maxlength="${max||300}" value="${esc(input)}">`:''}</div><div class="acts"><button data-a="0">Отмена</button><button data-a="1" class="${red?'red':''}">${esc(ok)}</button></div>`;
-  const close=()=>{al.classList.remove('open');ov.classList.remove('open')};
+  let shut=false;const close=()=>{shut=true;al.classList.remove('open');ov.classList.remove('open')};
   al.onclick=e=>{const b=e.target.closest('button');if(!b)return;const v=input!=null?$('#alIn').value:null;close();if(b.dataset.a==='1')f(v)};
-  ov.onclick=close;requestAnimationFrame(()=>{al.classList.add('open');ov.classList.add('open');const i=$('#alIn');if(i){i.focus();i.select()}});
+  ov.onclick=close;requestAnimationFrame(()=>{if(shut)return;al.classList.add('open');ov.classList.add('open');const i=$('#alIn');if(i){i.focus();i.select()}});
 }
 
 /* ---------- add sheet ---------- */
-let pick=null,loc=null;
-function openSheet(at){
-  pick=null;loc=at||null;['#kgIn','#lbIn','#ozIn','#noteIn','#spSearch'].forEach(s=>$(s).value='');
-  setUnit(unit);showPane('form');formState();
+let pick=null,loc=null,editId=null;
+function setG(g){if(unit==='kg')$('#kgIn').value=(g/1000).toFixed(2).replace('.',',');else{const oz=Math.round(g/28.3495);$('#lbIn').value=Math.floor(oz/16);$('#ozIn').value=oz%16}}
+function openSheet(at,eid){
+  const e=eid&&S.catches[eid];editId=e?eid:null;
+  pick=e?e.sp:null;loc=at||(e&&e.x!=null?{x:e.x,y:e.y,m:2}:null);['#kgIn','#lbIn','#ozIn','#noteIn','#spSearch'].forEach(s=>$(s).value='');
+  setUnit(unit);if(e){setG(e.g);$('#noteIn').value=e.note||''}
+  $('#shT').textContent=e?'Изменить улов':'Новый улов';showPane('form');formState();
   $('#ov').classList.add('open');$('#sheet').classList.add('open');document.body.style.overflow='hidden';
-  setTimeout(()=>showPane('sp'),360);
+  if(!e)setTimeout(()=>showPane('sp'),360);
 }
 function closeSheet(){$('#ov').classList.remove('open');$('#sheet').classList.remove('open');document.body.style.overflow=''}
 function showPane(p){const f=$('#paneForm'),s=$('#paneSp');
@@ -734,6 +866,10 @@ function renderSpList(){
 }
 function saveCatch(){
   const g=readG();if(!pick||!g)return;
+  if(editId&&S.catches[editId]){
+    const c={...S.catches[editId],sp:pick,g,note:$('#noteIn').value.trim().slice(0,50),u:Date.now()};
+    if(loc){c.x=+loc.x.toFixed(5);c.y=+loc.y.toFixed(5);c.m=2}else{delete c.x;delete c.y;delete c.m}
+    S.catches[c.id]=c;save();send({t:'upd',c});editId=null;closeSheet();render();toast('Изменения сохранены');return}
   const c={id:rid(14),pid:S.pid,sp:pick,g,ts:Date.now(),note:$('#noteIn').value.trim().slice(0,50)};
   if(loc){c.x=+loc.x.toFixed(5);c.y=+loc.y.toFixed(5);c.m=2}
   const r=recordOf(c);S.catches[c.id]=c;save();send({t:'add',c});closeSheet();render();
@@ -763,21 +899,27 @@ document.addEventListener('click',e=>{
   const tb=t.closest('.tabbar button');if(tb){if(view===tb.dataset.v){window.scrollTo({top:0,behavior:'smooth'});return}view=tb.dataset.v;S.view=view;save();window.scrollTo(0,0);render();return}
   const a=t.closest('[data-act]');if(a){const c=S.catches[a.dataset.act];if(!c)return;const acts=[];
     if(c.x!=null)acts.push({t:'Показать на карте',f:()=>{focusId=c.id;if(c.ts<since()){period='all';S.period='all'}view='map';S.view=view;save();render()}});
-    if(c.pid===S.pid)acts.push({t:'Удалить запись',red:1,f:()=>{S.deleted[c.id]=1;delete S.catches[c.id];save();send({t:'del',id:c.id});render()}});
-    if(!acts.length)return;actionSheet(c.sp,kgT(c.g)+(c.pid===S.pid?'':`, ${nm(c.pid)}`),acts);return}
+    acts.push({t:'Открыть вид',f:()=>openS2('species',c.sp)});
+    if(c.pid===S.pid){acts.push({t:'Изменить',f:()=>openSheet(null,c.id)});acts.push({t:'Удалить запись',red:1,f:()=>{S.deleted[c.id]=1;delete S.catches[c.id];save();send({t:'del',id:c.id});render()}})}actionSheet(c.sp,kgT(c.g)+(c.pid===S.pid?'':`, ${nm(c.pid)}`),acts);return}
   if(t.closest('#renameBtn')){alertBox({title:'Твоё имя',msg:'Его увидит соперник.',input:nm(S.pid),max:18,ok:'Сохранить',f:v=>{v=(v||'').trim().slice(0,18);if(v){S.names[S.pid]=v;save();send(hello());render()}}});return}
-  if(t.closest('#leaveBtn')){actionSheet('Выйти из комнаты?','Улов останется на этом устройстве.',[{t:'Выйти',red:1,f:()=>{cleanup();S.room=null;save();history.replaceState(null,'',location.pathname);net='off';render()}}]);return}
+  if(t.closest('#leaveBtn')){actionSheet('Выйти из комнаты?','Улов останется на этом устройстве.',[{t:'Выйти',red:1,f:()=>{closeS2();cleanup();S.room=null;save();history.replaceState(null,'',location.pathname);net='off';render()}}]);return}
   const sp=t.closest('[data-sp]');if(sp){pick=sp.dataset.sp;formState();showPane('form');setTimeout(()=>{const i=unit==='kg'?$('#kgIn'):$('#lbIn');if(!readG())i.focus()},380);return}
   const ns=t.closest('[data-newsp]');if(ns){pick=normSp(ns.dataset.newsp).slice(0,40);formState();showPane('form');return}
   const u=t.closest('#unitSeg button');if(u){setUnit(u.dataset.u);return}
+  if(t.closest('#meBtn')){openS2('profile');return}
+  const sd=t.closest('[data-spd]');if(sd){openS2('species',sd.dataset.spd);return}
+  const mw=t.closest('[data-mw]');if(mw){S.mapWho=mw.dataset.mw;save();renderMap();return}
+  if(t.closest('[data-msp]')){const sps=[...new Set(inPeriod().filter(c=>c.x!=null).map(c=>c.sp))].sort();
+    actionSheet('Вид на карте','',[{t:'Все виды',f:()=>{S.mapSp=null;save();renderMap()}},...sps.map(x=>({t:x,f:()=>{S.mapSp=x;save();renderMap()}}))]);return}
 });
+$('#s2Done').onclick=closeS2;$('#ov3').onclick=closeS2;
 $('#addBtn').onclick=()=>openSheet();
 $('#cancelBtn').onclick=closeSheet;$('#ov').onclick=closeSheet;$('#doneBtn').onclick=saveCatch;
 $('#spRow').onclick=()=>showPane('sp');$('#backBtn').onclick=()=>showPane('form');
 $('#locRow').onclick=openPicker;
 $('#spSearch').addEventListener('input',renderSpList);
 ['#kgIn','#lbIn','#ozIn'].forEach(s=>$(s).addEventListener('input',formState));
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#picker').classList.contains('open'))closePicker();else if($('#sheet').classList.contains('open'))closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#picker').classList.contains('open'))closePicker();else if($('#sheet').classList.contains('open'))closeSheet();else if(s2)closeS2()});
 addEventListener('scroll',()=>{if(view!=='map')$('#nb').classList.toggle('solid',scrollY>36)},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.room&&net!=='online'&&net!=='waiting')join()});
 
@@ -795,7 +937,7 @@ $('#avFile').addEventListener('change',async()=>{
 function renderObAv(){const a=S.avatars[S.pid];$('#obAvPrev').innerHTML=a?avH(S.pid):`<span class="av">${ic('plus')}</span>`;$('#obAvT').textContent=a?'Изменить фото':'Добавить фото'}
 $('#obAv').onclick=pickAvatar;
 document.addEventListener('click',e=>{
-  if(!e.target.closest('#avBtn'))return;
+  if(!e.target.closest('#avBtn,#avBtn2'))return;
   if(!S.avatars[S.pid]){pickAvatar();return}
   actionSheet('Твоё фото','',[{t:'Выбрать другое',f:pickAvatar},{t:'Удалить фото',red:1,f:()=>{delete S.avatars[S.pid];save();send(hello());render()}}]);
 });
