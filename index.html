@@ -195,6 +195,18 @@ button.row:active,a.row:active{background:var(--g2)}
 .split{display:flex;justify-content:space-between;width:100%;margin-top:6px;font-family:var(--round);font-size:13px;font-weight:600}
 .split .me{color:var(--me)}.split .op{color:var(--op)}
 .gh.s small{float:right;font-weight:400;color:var(--l2)}
+/* board v3 */
+.gh.first{margin-top:14px}
+.gh+.seg{margin-bottom:12px}
+.comp{margin-top:0}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);margin:16px 0 0;padding:12px 6px 0;border-top:.5px solid var(--sep)}
+.sc{display:grid;justify-items:center;gap:1px;text-align:center}
+.sc+.sc{border-left:.5px solid var(--sep)}
+.sl{font-size:12px;color:var(--l2);margin-bottom:3px}
+.sc .me,.sc .op{font-family:var(--round);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.42}
+.sc .me{color:var(--me)}.sc .op{color:var(--op)}.sc .w{opacity:1}
+.cempty{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 18px 0;padding-top:14px;border-top:.5px solid var(--sep);font-size:15px;color:var(--l2)}
+.gh small{font-size:15px;font-weight:400;color:var(--l2)}
 /* stat rows */
 .sr .t b{font-size:17px}
 .sr .vals{display:flex;gap:4px}
@@ -614,7 +626,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'Неделя',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='2.3';
+const APPV='2.4';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
@@ -645,44 +657,49 @@ function dayResults(list,opPid){
 }
 
 function renderBoard(){
-  const L=inPeriod(),P=stats(L),me=P[S.pid],op=rival(P);
+  const L=inPeriod(),P=stats(L),me=P[S.pid],op=rival(P),A=all();
   const a=me.best?me.best.g:0,b=op&&op.best?op.best.g:0,meL=a>b,opL=!!op&&b>a;
+  const who=c=>c.pid===S.pid?'Ты':esc(nm(c.pid)),dt=c=>new Date(c.ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
   const col=(p,cls,lead)=>{
     if(!p)return `<div class="col op invite"><div class="who"><span class="av">+</span><span>Соперник</span></div><button class="pbtn" data-share>${ic('share')}Пригласить</button></div>`;
     return `<div class="col ${cls}${(a||b)&&!lead?' dim':''}"><div class="who">${p.pid===S.pid?avH(p.pid):statusAv(p.pid)}<span>${p.pid===S.pid?'Ты':esc(nm(p.pid))}</span></div>
       <div class="big">${p.best?kg(p.best.g)+'<small>кг</small>':'0<small>кг</small>'}</div>
       <div class="spn">${p.best?esc(p.best.sp):'Нет улова'}</div>${lead?`<span class="leadpill">${ic('crown')}Лидер</span>`:''}</div>`};
-  let foot='';
-  if(op){const msg=!a&&!b?`Самая тяжёлая рыба ${PL[period]} решит, кто лидер.`:a===b?'Ничья.':meL?`Ты впереди на <b>${kgT(a-b)}</b>.`:`${esc(nm(op.pid))} впереди на <b>${kgT(b-a)}</b>.`;
-    foot=`<div class="foot"><div class="track">${a||b?`<i class="me" style="flex-grow:${a}"></i><i class="op" style="flex-grow:${b}"></i>`:''}</div><p>${msg}</p></div>`}
-  let h=`<h1 class="lt">Табло</h1><div class="seg" data-seg>${segHTML()}</div>
-    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${foot}</div>`;
+
+  /* 1. Duel for the chosen period: players, leader, gap, then a compact stats strip */
+  let tail='';
   if(L.length){
-    const rows=[['weight','c1','Общий вес',p=>p?p.total:0,v=>v?kg(v):'—'],['fish','c2','Поймано',p=>p?p.count:0,v=>v],
-      ['stack','c3','Видов',p=>p?Object.keys(p.sp).length:0,v=>v],['gauge','c4','Средний',p=>p&&p.count?Math.round(p.total/p.count):0,v=>v?kg(v):'—']];
-    h+=`<div class="gh">Счёт</div><div class="colhead"><span class="me">Ты</span><span class="op">${op?esc(nm(op.pid)):'—'}</span></div><div class="group">`+
-      rows.map(([i,c,l,f,s])=>{const x=f(me),y=f(op);return `<div class="row sr ii">${rowIc(i,c)}<span class="t"><b>${l}</b></span><span class="vals"><span class="me${x>y?' w':''}">${s(x)}</span><span class="op${y>x?' w':''}">${op?s(y):'—'}</span></span></div>`}).join('')+'</div>';
-  }else h+=`<div class="empty">${ic('fish')}<h3>Нет улова ${PL[period]}</h3><p>Запиши рыбу, и счёт появится здесь.</p><button class="pbtn" data-add>Записать улов</button></div>`;
-  const A=all();
-  if(A.length){
-    const top=A.reduce((m,c)=>!m||c.g>m.g?c:m,null),tot=A.reduce((x,c)=>x+c.g,0),aP=stats(A),aop=rival(aP),tm=aP[S.pid].total,to=aop?aP[aop.pid].total:0;
-    const recs=Object.values(A.reduce((o,c)=>{if(!o[c.sp]||c.g>o[c.sp].g)o[c.sp]=c;return o},{})).sort((a,b)=>b.g-a.g),shown=S.recAll?recs:recs.slice(0,6);
-    const who=c=>c.pid===S.pid?'Ты':esc(nm(c.pid)),dt=c=>new Date(c.ts).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
-    h+=`<div class="gh">За всё время</div><div class="tiles">
-      <button class="tile rec" data-spd="${esc(top.sp)}"><span class="tl">${rowIc('trophy','gold sm')}Самая тяжёлая</span><span class="bv">${kg(top.g)}<small>кг</small></span><span class="bs">${esc(top.sp)}</span><span class="bw">${avH(top.pid,'xs')}<span>${who(top)}, ${dt(top)}</span></span></button>
-      <div class="tile"><span class="tl">${rowIc('weight','c1 sm')}Общий вес</span><span class="bv">${kg(tot)}<small>кг</small></span><span class="bs">${A.length} ${plural(A.length,'рыба','рыбы','рыб')}</span>
-        ${aop?`<div class="track sm"><i class="me" style="flex-grow:${tm}"></i><i class="op" style="flex-grow:${to}"></i></div><span class="split"><span class="me">${kg(tm)}</span><span class="op">${kg(to)}</span></span>`:''}</div></div>
-      <div class="gh s">Рекорд каждого вида<small>${recs.length} из ${TOTAL}</small></div><div class="group">${shown.map(c=>`<button class="row ii" data-spd="${esc(c.sp)}">${avH(c.pid,'sm')}<span class="t"><b>${esc(c.sp)}</b><em>${who(c)}, ${dt(c)}</em></span><span class="v num" style="color:var(--${c.pid===S.pid?'me':'op'})">${kg(c.g)} кг</span>${ic('chev','chev')}</button>`).join('')}${recs.length>6?`<button class="row tint" data-recall><span class="t"><b>${S.recAll?'Свернуть':`Показать все ${recs.length}`}</b></span></button>`:''}</div>`;
+    if(op){const msg=a===b?'Ничья.':meL?`Ты впереди на <b>${kgT(a-b)}</b>`:`${esc(nm(op.pid))} впереди на <b>${kgT(b-a)}</b>`;
+      tail+=`<div class="foot"><div class="track"><i class="me" style="flex-grow:${a}"></i><i class="op" style="flex-grow:${b}"></i></div><p>${msg}</p></div>`}
+    const cells=[['Вес',p=>p?p.total:0,kg],['Рыб',p=>p?p.count:0,String],['Видов',p=>p?Object.keys(p.sp).length:0,String],['Средний',p=>p&&p.count?Math.round(p.total/p.count):0,kg]];
+    tail+=`<div class="strip">${cells.map(([l,f,fm])=>{const x=f(me),y=f(op);
+      return `<div class="sc"><span class="sl">${l}</span><span class="me${x&&x>=y?' w':''}">${x?fm(x):'—'}</span>${op?`<span class="op${y&&y>=x?' w':''}">${y?fm(y):'—'}</span>`:''}</div>`}).join('')}</div>`;
+  }else tail=`<div class="cempty"><span>Нет улова ${PL[period]}</span><button class="pbtn" data-add>${ic('plus')}Записать</button></div>`;
+  let h=`<h1 class="lt">Табло</h1>
+    <div class="gh first">Дуэль</div><div class="seg" data-seg>${segHTML()}</div>
+    <div class="comp" id="comp"><div class="cols">${col(me,'me',meL)}${col(op,'op',opL)}</div>${tail}</div>`;
+  if(!A.length){$('#board').innerHTML=h;return}
+
+  /* 2. All-time summary */
+  const top=A.reduce((m,c)=>!m||c.g>m.g?c:m,null),tot=A.reduce((x,c)=>x+c.g,0),aP=stats(A),aop=rival(aP),tm=aP[S.pid].total,to=aop?aP[aop.pid].total:0;
+  h+=`<div class="gh">За всё время</div><div class="tiles">
+    <button class="tile rec" data-spd="${esc(top.sp)}"><span class="tl">${rowIc('trophy','gold sm')}Самая тяжёлая</span><span class="bv">${kg(top.g)}<small>кг</small></span><span class="bs">${esc(top.sp)}</span><span class="bw">${avH(top.pid,'xs')}<span>${who(top)}, ${dt(top)}</span></span></button>
+    <div class="tile"><span class="tl">${rowIc('weight','c1 sm')}Общий вес</span><span class="bv">${kg(tot)}<small>кг</small></span><span class="bs">${A.length} ${plural(A.length,'рыба','рыбы','рыб')}</span>
+      ${aop?`<div class="track sm"><i class="me" style="flex-grow:${tm}"></i><i class="op" style="flex-grow:${to}"></i></div><span class="split"><span class="me">${kg(tm)}</span><span class="op">${kg(to)}</span></span>`:''}</div></div>`;
+
+  /* 3. Day wins */
+  if(aop){
+    const R=dayResults(A,aop.pid).filter(r=>r.me||r.op),wm=R.filter(r=>r.win==='me').length,wo=R.filter(r=>r.win==='op').length;
+    const last=R.slice(-7),mx=Math.max(...last.map(r=>Math.max(r.me,r.op)));
+    h+=`<div class="gh">Победы по дням</div><div class="group"><div class="dscore">${avH(S.pid)}<b><span class="me">${wm}</span> : <span class="op">${wo}</span></b>${avH(aop.pid)}</div>
+      <div class="days">${last.map(r=>{const d=new Date(r.ts),w=r.win==='tie'?'':r.win,v=Math.max(r.me,r.op);
+        return `<div class="dcol" title="${d.toLocaleDateString('ru-RU')}: ${kgT(v)}"><span class="dv">${kg(v).replace(/,\d+$/,'')}</span><i class="dbar ${w}" style="height:${Math.max(8,Math.round(v/mx*56))}px"></i><span class="dlab">${d.toLocaleDateString('ru-RU',{weekday:'short'})}</span></div>`}).join('')}</div></div>
+      <p class="gf">День выигрывает самая тяжёлая рыба дня.</p>`;
   }
-  if(op){
-    const R=dayResults(all(),op.pid).filter(r=>r.me||r.op),wm=R.filter(r=>r.win==='me').length,wo=R.filter(r=>r.win==='op').length;
-    if(R.length){
-      const last=R.slice(-7),mx=Math.max(...last.map(r=>Math.max(r.me,r.op)));
-      h+=`<div class="gh">Дни<small>победа за самую тяжёлую рыбу дня</small></div><div class="group"><div class="dscore">${avH(S.pid)}<b><span class="me">${wm}</span> : <span class="op">${wo}</span></b>${avH(op.pid)}</div>
-        <div class="days">${last.map(r=>{const d=new Date(r.ts),w=r.win==='tie'?'':r.win,v=Math.max(r.me,r.op);
-          return `<div class="dcol" title="${d.toLocaleDateString('ru-RU')}: ${kgT(v)}"><span class="dv">${kg(v).replace(/,\d+$/,'')}</span><i class="dbar ${w}" style="height:${Math.max(8,Math.round(v/mx*56))}px"></i><span class="dlab">${d.toLocaleDateString('ru-RU',{weekday:'short'})}</span></div>`}).join('')}</div></div>`;
-    }
-  }
+
+  /* 4. Record of every species */
+  const recs=Object.values(A.reduce((o,c)=>{if(!o[c.sp]||c.g>o[c.sp].g)o[c.sp]=c;return o},{})).sort((x,y)=>y.g-x.g),shown=S.recAll?recs:recs.slice(0,5);
+  h+=`<div class="gh">Рекорды видов<small>${recs.length} из ${TOTAL}</small></div><div class="group">${shown.map(c=>`<button class="row ii" data-spd="${esc(c.sp)}">${avH(c.pid,'sm')}<span class="t"><b>${esc(c.sp)}</b><em>${who(c)}, ${dt(c)}</em></span><span class="v num" style="color:var(--${c.pid===S.pid?'me':'op'})">${kg(c.g)} кг</span>${ic('chev','chev')}</button>`).join('')}${recs.length>5?`<button class="row tint" data-recall><span class="t"><b>${S.recAll?'Свернуть':`Показать все ${recs.length}`}</b></span></button>`:''}</div>`;
   $('#board').innerHTML=h;
 }
 
