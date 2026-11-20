@@ -599,7 +599,7 @@ function segHTML(){const ks=['today','week','all'],i=ks.indexOf(period);
   return `<i class="th" style="width:calc((100% - 4px)/3);transform:translateX(${i*100}%)"></i>`+ks.map(p=>`<button data-p="${p}" aria-pressed="${p===period}">${{today:'Сегодня',week:'Неделя',all:'Всё время'}[p]}</button>`).join('')}
 
 /* ---------- render ---------- */
-const APPV='2.0';
+const APPV='2.1';
 const TITLES={board:'Табло',map:'Карта',log:'Журнал',species:'Виды'};
 function render(){
   const has=!!S.room;
@@ -628,13 +628,6 @@ function dayResults(list,opPid){
   for(const c of list){const k=dKey(c.ts);const r=D[k]||(D[k]={k,ts:c.ts,me:0,op:0});if(c.pid===S.pid)r.me=Math.max(r.me,c.g);else if(c.pid===opPid)r.op=Math.max(r.op,c.g);r.ts=Math.min(r.ts,c.ts)}
   return Object.values(D).map(r=>({...r,win:r.me>r.op?'me':r.op>r.me?'op':'tie'})).sort((a,b)=>a.ts-b.ts);
 }
-/* in-game challenges (Progress > Challenges) we can check from the log */
-const ACH=[
-  {id:'cal',t:'Задание Кэла',d:'Parrotfish тяжелее 0,91 кг',i:'fish',test:L=>L.some(c=>c.sp==='Stoplight Parrotfish'&&c.g>907)},
-  {id:'big',t:'Big Fish',d:'Рыба от 9,07 кг (20 lb)',i:'weight',test:L=>L.some(c=>c.g>=9072)},
-  {id:'ang',t:'Angler',d:'4 вида за 6 минут',i:'timer',test:L=>{const s=[...L].sort((a,b)=>a.ts-b.ts);for(let i=0;i<s.length;i++){const set=new Set();for(let j=i;j<s.length&&s[j].ts-s[i].ts<=36e4;j++)set.add(s[j].sp);if(set.size>=4)return true}return false}},
-  {id:'pro',t:'Pro Angler',d:`Все ${TOTAL} видов`,i:'stack',test:L=>new Set(L.map(c=>c.sp).filter(s=>RU[s]!==undefined)).size>=TOTAL,prog:L=>new Set(L.map(c=>c.sp).filter(s=>RU[s]!==undefined)).size}
-];
 
 function renderBoard(){
   const L=inPeriod(),P=stats(L),me=P[S.pid],op=rival(P);
@@ -664,11 +657,6 @@ function renderBoard(){
           return `<div class="dcol" title="${d.toLocaleDateString('ru-RU')}: ${kgT(v)}"><span class="dv">${kg(v).replace(/,\d+$/,'')}</span><i class="dbar ${w}" style="height:${Math.max(8,Math.round(v/mx*56))}px"></i><span class="dlab">${d.toLocaleDateString('ru-RU',{weekday:'short'})}</span></div>`}).join('')}</div></div>`;
     }
   }
-  const A=all(),mine=A.filter(c=>c.pid===S.pid),theirs=op?A.filter(c=>c.pid===op.pid):[];
-  h+=`<div class="gh">Достижения<small>задания из игры</small></div><div class="group">`+ACH.map(x=>{
-    const m=x.test(mine),o=op&&x.test(theirs),any=m||o;
-    const right=x.prog&&!any?`<span class="v num"><span style="color:var(--me)">${x.prog(mine)}</span>${op?` / <span style="color:var(--op)">${x.prog(theirs)}</span>`:''}</span>`:`<span class="done">${m?avH(S.pid,'xs'):''}${o?avH(op.pid,'xs'):''}</span>`;
-    return `<div class="row ii">${rowIc(x.i,any?'gold':'gray')}<span class="t"><b>${x.t}</b><em>${x.d}</em></span>${right}</div>`}).join('')+'</div>';
   $('#board').innerHTML=h;
 }
 
